@@ -1,0 +1,21 @@
+{
+  "home": {
+    "title": "Welcome to our Real Estate Agency",
+    "description": "Find your perfect home among our listings."
+  },
+  "navbar": {
+    "home": "Home"
+  },
+  "house": {
+    "viewDetails": "View details",
+    "price": "Price",
+    "address": "Address",
+    "backToHome": "Back to home",
+    "notFound": "House not found",
+    "closeModal": "Close image gallery",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "morePhotos": "{count, plural, =1 {# more photo} other {# more photos}}"
+  }
+}
+

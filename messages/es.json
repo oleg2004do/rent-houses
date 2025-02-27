@@ -1,0 +1,16 @@
+{
+  "home": {
+    "title": "Bienvenido a nuestra Agencia Inmobiliaria",
+    "description": "Encuentra tu hogar perfecto entre nuestras ofertas."
+  },
+  "navbar": {
+    "home": "Inicio"
+  },
+  "house": {
+    "viewDetails": "Ver detalles",
+    "price": "Precio",
+    "address": "Dirección",
+    "backToHome": "Volver al inicio"
+  }
+}
+
