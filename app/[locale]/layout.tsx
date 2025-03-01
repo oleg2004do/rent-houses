@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { notFound } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import { getTranslations } from "next-intl/server"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -31,6 +32,8 @@ export default async function LocaleLayout({
   } catch (error) {
     notFound()
   }
+
+  const t = await getTranslations("LocaleLayout")
 
   return (
     <html lang={locale}>
