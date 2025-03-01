@@ -17,7 +17,11 @@ const nextConfig = {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
-  }
+  },
+  // Add these Vercel-specific configurations
+  productionBrowserSourceMaps: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
 };
 
 // Функція для об'єднання конфігурацій
