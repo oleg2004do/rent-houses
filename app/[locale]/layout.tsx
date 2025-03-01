@@ -4,6 +4,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { notFound } from "next/navigation"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -32,9 +34,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
-      <body className={inter.className}>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>

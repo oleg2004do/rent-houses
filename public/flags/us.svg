@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 912 600">
+  <rect width="912" height="600" fill="#bf0a30"/>
+  <g fill="#ffffff">
+    <rect width="912" height="46.15" y="46.15"/>
+    <rect width="912" height="46.15" y="138.45"/>
+    <rect width="912" height="46.15" y="230.75"/>
+    <rect width="912" height="46.15" y="323.05"/>
+    <rect width="912" height="46.15" y="415.35"/>
+    <rect width="912" height="46.15" y="507.65"/>
+  </g>
+  <rect width="364.8" height="323.1" fill="#002868"/>
+  <g fill="#ffffff">
+    <g id="s18">
+      <g id="s9">
+        <g id="s5">
+          <g id="s4">
+            <path id="s" d="M24.8,13.5 L26.4,18.2 L31.4,18.2 L27.3,21.2 L28.9,25.9 L24.8,23 L20.7,25.9 L22.3,21.2 L18.2,18.2 L23.2,18.2 Z"/>
+            <use href="#s" y="26.4"/>
+            <use href="#s" y="52.8"/>
+            <use href="#s" y="79.2"/>
+          </g>
+          <use href="#s4" x="31.4"/>
+        </g>
+        <use href="#s5" x="62.8"/>
+      </g>
+      <use href="#s9" x="94.2"/>
+    </g>
+    <use href="#s18" y="106.4"/>
+    <use href="#s9" y="212.8"/>
+  </g>
+</svg>
+

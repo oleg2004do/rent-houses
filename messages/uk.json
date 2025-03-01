@@ -10,7 +10,21 @@
     "viewDetails": "Переглянути деталі",
     "price": "Ціна",
     "address": "Адреса",
-    "backToHome": "Повернутися на головну"
+    "backToHome": "Повернутися на головну",
+    "notFound": "Будинок не знайдено",
+    "previousImage": "Попереднє зображення",
+    "nextImage": "Наступне зображення",
+    "closeGallery": "Закрити галерею",
+    "showAdditionalInfo": "Показати додаткову інформацію",
+    "hideAdditionalInfo": "Приховати додаткову інформацію"
+  },
+  "footer": {
+    "companyName": "Journey UA",
+    "companyDescription": "Ми допомагаємо вам знайти дім вашої мрії.",
+    "contactUs": "Зв'яжіться з нами",
+    "address": "Наша адреса",
+    "addressLine1": "вул. Головна, 123, Місто, Країна, Індекс",
+    "allRightsReserved": "Всі права захищені."
   }
 }
 

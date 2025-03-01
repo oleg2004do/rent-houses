@@ -10,7 +10,21 @@
     "viewDetails": "Ver detalles",
     "price": "Precio",
     "address": "Dirección",
-    "backToHome": "Volver al inicio"
+    "backToHome": "Volver al inicio",
+    "notFound": "Casa no encontrada",
+    "previousImage": "Imagen anterior",
+    "nextImage": "Siguiente imagen",
+    "closeGallery": "Cerrar galería",
+    "showAdditionalInfo": "Mostrar información adicional",
+    "hideAdditionalInfo": "Ocultar información adicional"
+  },
+  "footer": {
+    "companyName": "Journey UA",
+    "companyDescription": "Te ayudamos a encontrar la casa de tus sueños.",
+    "contactUs": "Contáctanos",
+    "address": "Nuestra Dirección",
+    "addressLine1": "Calle Principal 123, Ciudad, País, Código Postal",
+    "allRightsReserved": "Todos los derechos reservados."
   }
 }
 

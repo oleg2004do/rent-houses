@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import Navbar from "@/components/Navbar"
 import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import type { House } from "@/types"
 
 export default function HouseDetails({ params }: { params: { id: string; locale: string } }) {
   const t = useTranslations("house")
@@ -24,6 +25,13 @@ export default function HouseDetails({ params }: { params: { id: string; locale:
 
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1))
+  }
+
+  const getDescription = (house: House, locale: string): string => {
+    if (typeof house.description === "string") {
+      return house.description
+    }
+    return house.description[locale as keyof typeof house.description] || house.description.en
   }
 
   return (
@@ -78,7 +86,7 @@ export default function HouseDetails({ params }: { params: { id: string; locale:
         <p className="text-lg mb-2">
           {t("address")}: {house.address}
         </p>
-        <p className="mb-4">{house.description}</p>
+        <p className="mb-4">{getDescription(house, params.locale)}</p>
         <Link
           href={`/${params.locale}`}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"

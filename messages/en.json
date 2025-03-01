@@ -12,10 +12,19 @@
     "address": "Address",
     "backToHome": "Back to home",
     "notFound": "House not found",
-    "closeModal": "Close image gallery",
     "previousImage": "Previous image",
     "nextImage": "Next image",
-    "morePhotos": "{count, plural, =1 {# more photo} other {# more photos}}"
+    "closeGallery": "Close gallery",
+    "showAdditionalInfo": "Show Additional Info",
+    "hideAdditionalInfo": "Hide Additional Info"
+  },
+  "footer": {
+    "companyName": "Journey UA",
+    "companyDescription": "We help you find your dream home.",
+    "contactUs": "Contact Us",
+    "address": "Our Address",
+    "addressLine1": "123 Main Street, City, Country, ZIP",
+    "allRightsReserved": "All rights reserved."
   }
 }
 
