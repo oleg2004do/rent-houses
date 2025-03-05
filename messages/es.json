@@ -1,7 +1,19 @@
 {
   "home": {
-    "title": "Bienvenido a nuestra Agencia Inmobiliaria",
-    "description": "Encuentra tu hogar perfecto entre nuestras ofertas."
+    "title": "Bienvenido a nuestra organización Journey UA",
+    "description": "Journey UA es una organización sin fines de lucro 501(c)3 creada para ayudar a los ucranianos recién llegados afectados por la guerra. Desde 2022, hemos estado ayudando a los refugiados ucranianos con la reubicación y adaptación en los EE.UU.",
+    "housingTitle": "Vivienda en Minneapolis sin complicaciones",
+    "housingDescription": "Sabemos lo importante que es tener un lugar cálido y confiable, especialmente cuando acabas de llegar a una nueva ciudad. Por eso, nuestro equipo está listo para ayudarte a encontrar vivienda de manera rápida, sencilla y sin estrés.",
+    "offerTitle": "¿Qué ofrecemos?",
+    "offerList": [
+      "✅ Habitaciones amuebladas – múdate de inmediato sin gastos adicionales",
+      "✅ Sin depósito – no es necesario pagar una gran suma por adelantado",
+      "✅ Sin verificación de crédito – no será un obstáculo",
+      "✅ Sin comprobante de empleo – no es necesario esperar un contrato o certificado",
+      "✅ Solicitud gratuita – sin tarifas ocultas",
+      "✅ Contrato flexible – términos que se adaptan a ti"
+    ],
+    "contactInfo": "📍 Journey UA – estamos aquí para facilitar tu reubicación."
   },
   "navbar": {
     "home": "Inicio"
@@ -23,8 +35,12 @@
     "companyDescription": "Te ayudamos a encontrar la casa de tus sueños.",
     "contactUs": "Contáctanos",
     "address": "Nuestra Dirección",
-    "addressLine1": "Calle Principal 123, Ciudad, País, Código Postal",
-    "allRightsReserved": "Todos los derechos reservados."
+    "addressLine1": "Estado de Minnesota, ciudad de Minneapolis 55414",
+    "allRightsReserved": "Todos los derechos reservados.",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "emailAddress": "info@uajourney.com",
+    "phoneNumber": "+1 (763) 352-4907"
   }
 }
 

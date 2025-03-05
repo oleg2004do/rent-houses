@@ -262,7 +262,7 @@ Amplias áreas de cocina
   {
     id: 3,
     name: "920/922 6th Str SE",
-    price: "$550/month",
+    price: "$900/month",
     address: "920/922 6th Str SE 55414 Minneapolis",
     mapLink:
       `https://www.google.com/maps/place/920+6th+St+SE,+Minneapolis,+MN+55414,+%D0%A1%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D1%96+%D0%A8%D1%82%D0%B0%D1%82%D0%B8+%D0%90%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B8/@44.9847235,-93.2412911,19z/data=!3m1!4b1!4m6!3m5!1s0x52b32d1d70eb11df:0x72e1f151f031bc02!8m2!3d44.9847235!4d-93.2406474!16s%2Fg%2F11wth1lks9?entry=ttu&g_ep=EgoyMDI1MDIyNi4xIKXMDSoASAFQAw%3D%3Dhttphttps://www.google.com/maps/place/920+6th+St+SE,+Minneapolis,+MN+55414,+%D0%A1%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D1%96+%D0%A8%D1%82%D0%B0%D1%82%D0%B8+%D0%90%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B8/@44.9847235,-93.2412911,19z/data=!3m1!4b1!4m6!3m5!1s0x52b32d1d70eb11df:0x72e1f151f031bc02!8m2!3d44.9847235!4d-93.2406474!16s%2Fg%2F11wth1lks9?entry=ttu&g_ep=EgoyMDI1MDIyNi4xIKXMDSoASAFQAw%3D%3Ds://www.google.com/maps/place/1129+SE+8th+St,+Minneapolis,+MN+55414,+%D0%A1%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D1%96+%D0%A8%D1%82%D0%B0%D1%82%D0%B8+%D0%90%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B8/@44.9851963,-93.2364175,17.91z/data=!4m6!3m5!1s0x52b32d0ebffe8433:0xc4c178b27e84a7a9!8m2!3d44.9858137!4d-93.2354956!16s%2Fg%2F11c5mg5c2k?entry=ttu&g_ep=EgoyMDI1MDIyNS4wIKXMDSoASAFQAw%3D%3Dttps://www.google.com/maps/place/1316+7th+St+SE,+Minneapolis,+MN+55414,+%D0%A1%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D1%96+%D0%A8%D1%82%D0%B0%D1%82%D0%B8+%D0%90%D0%BC%D0%B5%D1%80%D0%B8%D0%BA%D0%B8/@44.9834483,-93.2368165,17z/data=!3m1!4b1!4m6!3m5!1s0x52b32d0e358d4dd3:0xa8b52166165c2e98!8m2!3d44.9834483!4d-93.2342416!16s%2Fg%2F11c2bsv4rh?entry=ttu&g_ep=EgoyMDI1MDIyNS4wIKXMDSoASAFQAw%3D%3D`,
@@ -271,7 +271,7 @@ Amplias áreas de cocina
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-922/photo 1.jpg", "/images-922/photo 2.png", "/images-922/photo 3.png", 
+    images: ["/images-922/photo 1.jpg", "/images-922/photo 2.jpg", "/images-922/photo 3.jpg", 
       "/images-922/photo 4.jpg", "/images-922/photo 5.jpg", "/images-922/photo 6.jpg", "/images-922/photo 7.jpg", "/images-922/photo 8.jpg", "/images-922/photo 9.jpg", 
       "/images-922/photo 10.jpg", "/images-922/photo 11.jpg", "/images-922/photo 12.jpg", "/images-922/photo 13.jpg", "/images-922/photo 14.jpg", "/images-922/photo 15.jpg"
       , "/images-922/photo 16.jpg", "/images-922/photo 17.jpg", "/images-922/photo 18.jpg", "/images-922/photo 19.jpg"],

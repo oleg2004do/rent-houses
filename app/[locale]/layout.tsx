@@ -6,12 +6,14 @@ import { NextIntlClientProvider } from "next-intl"
 import { notFound } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import PersistentFavicon from "@/components/PersistentFavicon"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Real Estate Website",
-  description: "Find your dream home",
+  title: "Journey UA - Housing",
+  description: "Find your dream home with Journey UA",
+  // Видаляємо статичні іконки з метаданих
 }
 
 export function generateStaticParams() {
@@ -36,6 +38,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <PersistentFavicon />
           <Navbar />
           <main className="flex-grow">{children}</main>
           <Footer />

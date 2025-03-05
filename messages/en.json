@@ -1,7 +1,19 @@
 {
   "home": {
-    "title": "Welcome to our Real Estate Agency",
-    "description": "Find your perfect home among our listings."
+    "title": "Welcome to our organization Journey UA",
+    "description": "Journey UA is a 501(c)3 non-profit organization created to help newly arrived Ukrainians affected by the war. Since 2022, we have been helping Ukrainian refugees with relocation and adaptation in the USA",
+    "housingTitle": "Housing in Minneapolis without the hassle",
+    "housingDescription": "We know how important it is to have a warm and reliable place, especially when you're just arriving in a new city. That's why our team is ready to help you find housing quickly, simply, and without stress.",
+    "offerTitle": "What we offer?",
+    "offerList": [
+      "✅ Furnished rooms – move in right away without extra expenses",
+      "✅ No deposit – no need to pay a large sum upfront",
+      "✅ No credit check – it won't be an obstacle",
+      "✅ No proof of employment – no need to wait for a contract or certificate",
+      "✅ Free application – no hidden fees",
+      "✅ Flexible contract – terms that adapt to you"
+    ],
+    "contactInfo": "📍 Journey UA – we're here to make your relocation easier."
   },
   "navbar": {
     "home": "Home"
@@ -15,16 +27,20 @@
     "previousImage": "Previous image",
     "nextImage": "Next image",
     "closeGallery": "Close gallery",
-    "showAdditionalInfo": "Show Additional Info",
-    "hideAdditionalInfo": "Hide Additional Info"
+    "showAdditionalInfo": "Show additional information",
+    "hideAdditionalInfo": "Hide additional information"
   },
   "footer": {
     "companyName": "Journey UA",
     "companyDescription": "We help you find your dream home.",
     "contactUs": "Contact Us",
     "address": "Our Address",
-    "addressLine1": "123 Main Street, City, Country, ZIP",
-    "allRightsReserved": "All rights reserved."
+    "addressLine1": "MN, Minneapolis 55414",
+    "allRightsReserved": "All rights reserved.",
+    "email": "Email",
+    "phone": "Phone",
+    "emailAddress": "info@uajourney.com",
+    "phoneNumber": "+1 (763) 352-4907"
   }
 }
 
