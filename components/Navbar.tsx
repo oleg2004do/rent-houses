@@ -39,9 +39,9 @@ const Navbar = () => {
   }
 
   const languages = [
-    { code: "en", flag: "/flags/us.svg", label: "English" },
-    { code: "uk", flag: "/flags/ua.svg", label: "Українська" },
-    { code: "es", flag: "/flags/es.svg", label: "Español" },
+    { code: "en", flag: "/flags/usa.svg", label: "English" },
+    { code: "uk", flag: "/flags/ukraine.svg", label: "Українська" },
+    { code: "es", flag: "/flags/spain.svg", label: "Español" },
   ]
 
   return (
