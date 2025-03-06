@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// Визначаємо підтримувані локалі
 const locales = ["en", "uk", "es"]
 const defaultLocale = "en"
 
@@ -17,31 +18,41 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  try {
-    // Перевіряємо, чи URL вже містить локаль
-    const pathnameHasLocale = locales.some((locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`)
+  // Перевіряємо, чи URL вже містить локаль
+  const pathnameHasLocale = locales.some((locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`)
 
-    // Якщо URL вже містить локаль, пропускаємо запит
-    if (pathnameHasLocale) {
-      return NextResponse.next()
-    }
-
-    // Якщо це кореневий шлях, пропускаємо запит
-    if (pathname === "/") {
-      return NextResponse.next()
-    }
-
-    // Для інших шляхів додаємо локаль
-    return NextResponse.redirect(new URL(`/${defaultLocale}${pathname}`, request.url))
-  } catch (error) {
-    console.error("Middleware error:", error)
-    // У випадку помилки перенаправляємо на головну
-    return NextResponse.redirect(new URL("/", request.url))
+  if (pathnameHasLocale) {
+    return NextResponse.next()
   }
+
+  // Якщо це кореневий шлях, пропускаємо запит
+  if (pathname === "/") {
+    return NextResponse.next()
+  }
+
+  // Отримуємо локаль з кукі або заголовків
+  let locale = defaultLocale
+  const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value
+  if (cookieLocale && locales.includes(cookieLocale)) {
+    locale = cookieLocale
+  } else {
+    const acceptLanguage = request.headers.get("accept-language")
+    if (acceptLanguage) {
+      const preferredLocale = acceptLanguage.split(",")[0].split("-")[0].toLowerCase()
+      if (locales.includes(preferredLocale)) {
+        locale = preferredLocale
+      }
+    }
+  }
+
+  // Перенаправляємо на URL з локаллю
+  return NextResponse.redirect(new URL(`/${locale}${pathname === "/" ? "" : pathname}`, request.url))
 }
 
 export const config = {
-  // Налаштовуємо matcher для всіх маршрутів, крім статичних файлів
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    // Виключаємо всі внутрішні шляхи Next.js
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 }
 

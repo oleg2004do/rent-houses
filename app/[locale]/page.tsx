@@ -1,42 +1,48 @@
-import { notFound } from "next/navigation"
+import Link from "next/link"
 
-const locales = ["en", "uk", "es"]
+const messages = {
+  uk: {
+    title: "Journey UA - Українська",
+    description: "Сайт працює українською!",
+    home: "На головну",
+  },
+  en: {
+    title: "Journey UA - English",
+    description: "The site works in English!",
+    home: "Home",
+  },
+  es: {
+    title: "Journey UA - Español",
+    description: "¡El sitio funciona en español!",
+    home: "Inicio",
+  },
+}
 
 export default function LocalePage({ params }: { params: { locale: string } }) {
-  // Перевіряємо, чи локаль підтримується
-  if (!locales.includes(params.locale)) {
-    notFound()
-  }
-
-  const messages = {
-    uk: "Сайт працює українською!",
-    es: "¡El sitio funciona en español!",
-    en: "The site works in English!",
-  }
+  const locale = params.locale as keyof typeof messages
+  const msg = messages[locale] || messages.en
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">Journey UA - {params.locale.toUpperCase()}</h1>
-      <p className="mt-4 text-xl">{messages[params.locale as keyof typeof messages]}</p>
-      <div className="mt-8 flex gap-4">
-        {locales.map((locale) => (
-          <a
-            key={locale}
-            href={`/${locale}`}
-            className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-colors"
+      <h1 className="text-4xl font-bold mb-4">{msg.title}</h1>
+      <p className="text-xl mb-8">{msg.description}</p>
+      <div className="flex gap-4">
+        <Link href="/" className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-colors">
+          {msg.home}
+        </Link>
+        {Object.keys(messages).map((l) => (
+          <Link
+            key={l}
+            href={`/${l}`}
+            className={`rounded px-4 py-2 text-white transition-colors ${
+              l === locale ? "bg-green-500 hover:bg-green-600" : "bg-blue-500 hover:bg-blue-600"
+            }`}
           >
-            {locale === "uk" ? "Українська" : locale === "es" ? "Español" : "English"}
-          </a>
+            {l === "uk" ? "Українська" : l === "es" ? "Español" : "English"}
+          </Link>
         ))}
       </div>
     </div>
   )
-}
-
-// Генеруємо статичні параметри для всіх підтримуваних локалей
-export function generateStaticParams() {
-  return locales.map((locale) => ({
-    locale,
-  }))
 }
 
