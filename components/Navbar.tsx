@@ -56,7 +56,7 @@ const Navbar = () => {
   const languages = [
     { code: "en", flag: "/flags/usa.png", label: "English" },
     { code: "uk", flag: "/flags/ukraine.png", label: "Українська" },
-    { code: "es", flag: "/flags/spain.svg", label: "Español" },
+    { code: "es", flag: "/flags/spain.png", label: "Español" },
   ]
 
   // Не рендеримо нічого до монтування компонента
