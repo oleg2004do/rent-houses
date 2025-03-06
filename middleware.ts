@@ -3,7 +3,6 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 const locales = ["en", "uk", "es"]
-const publicPages = ["/", "/uk", "/en", "/es"]
 
 // Створюємо middleware для інтернаціоналізації
 const intlMiddleware = createMiddleware({
@@ -15,18 +14,26 @@ const intlMiddleware = createMiddleware({
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Перевіряємо, чи це публічна сторінка
-  if (publicPages.includes(pathname)) {
-    return intlMiddleware(request)
-  }
-
-  // Для всіх інших маршрутів
+  // Додаємо обробку помилок
   try {
-    return await intlMiddleware(request)
+    // Отримуємо поточну локаль з URL
+    const locale = pathname.split("/")[1]
+
+    // Якщо локаль не вказана або невірна, перенаправляємо на англійську
+    if (!locale || !locales.includes(locale)) {
+      const defaultLocale = "en"
+      const newUrl = new URL(`/${defaultLocale}${pathname}`, request.url)
+      return NextResponse.redirect(newUrl)
+    }
+
+    // Застосовуємо middleware для інтернаціоналізації
+    return intlMiddleware(request)
   } catch (error) {
     console.error("Middleware error:", error)
-    // У випадку помилки перенаправляємо на домашню сторінку
-    return NextResponse.redirect(new URL("/", request.url))
+
+    // У випадку помилки перенаправляємо на домашню сторінку англійською
+    const newUrl = new URL("/en", request.url)
+    return NextResponse.redirect(newUrl)
   }
 }
 

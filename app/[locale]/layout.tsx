@@ -7,7 +7,7 @@ import { notFound } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { setRequestLocale } from "next-intl/server"
-import DynamicEmojiFavicon from "@/components/DynamicEmojiFavicon"
+import ErrorBoundary from "@/components/ErrorBoundary"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   description: "Find your dream home with Journey UA",
 }
 
-// Вказуємо, що цей компонент повинен рендеритися динамічно
 export const dynamic = "force-dynamic"
 export const revalidate = 0
 
@@ -31,7 +30,6 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
-  // Встановлюємо локаль для запиту
   setRequestLocale(locale)
 
   let messages
@@ -44,12 +42,13 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <DynamicEmojiFavicon />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </NextIntlClientProvider>
+        <ErrorBoundary>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </NextIntlClientProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )
