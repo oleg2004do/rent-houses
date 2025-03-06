@@ -75,7 +75,15 @@ const HouseList = ({ locale }: { locale: string }) => {
               {t.price}: {house.price}
             </p>
             <p className="text-gray-600 mb-2">
-              {t.address}: {house.address}
+              {t.address}:
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(house.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-1"
+              >
+                {house.address}
+              </a>
             </p>
             <p className="text-gray-600 mb-4">
               {typeof house.description === "string"

@@ -235,7 +235,15 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         {t.price}: {house.price}
       </p>
       <p className="text-lg mb-2">
-        {t.address}: {house.address}
+        {t.address}:
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(house.address)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline ml-1"
+        >
+          {house.address}
+        </a>
       </p>
       <p className="mb-4">{getDescription(house, locale)}</p>
 
