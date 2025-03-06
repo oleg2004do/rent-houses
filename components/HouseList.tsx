@@ -6,14 +6,27 @@ import { houses } from "@/data/houses"
 import { useTranslations } from "next-intl"
 import { useParams } from "next/navigation"
 import type { House } from "@/types"
+import { useState, useEffect } from "react"
 
 const HouseList = () => {
   const t = useTranslations("house")
   const params = useParams()
   const locale = (params.locale as string) || "en"
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className={`grid grid-cols-1 ${isMobile ? "" : "md:grid-cols-2 lg:grid-cols-3"} gap-4`}>
       {houses.map((house: House) => (
         <div key={house.id} className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="relative w-full h-48">
@@ -22,6 +35,8 @@ const HouseList = () => {
               alt={house.name}
               fill
               style={{ objectFit: "cover" }}
+              loading="lazy"
+              sizes={isMobile ? "100vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
             />
           </div>
           <div className="p-4">
@@ -39,7 +54,7 @@ const HouseList = () => {
             </p>
             <Link
               href={`/${locale}/house/${house.id}`}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
+              className="inline-block w-full text-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
             >
               {t("viewDetails")}
             </Link>

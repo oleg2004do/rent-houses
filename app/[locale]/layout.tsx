@@ -14,6 +14,13 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Journey UA - Housing",
   description: "Find your dream home with Journey UA",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+  themeColor: "#ffffff",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Journey UA",
+  },
 }
 
 export const dynamic = "force-dynamic"
@@ -41,6 +48,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <ErrorBoundary>
           <NextIntlClientProvider locale={locale} messages={messages}>
