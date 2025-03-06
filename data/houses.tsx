@@ -13,8 +13,8 @@ export const houses: House[] = [
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-1316/phonot 1.jpg", "/images-1316/phonot 2.jpg", "/images-1316/phonot 3.jpg", "/images-1316/phonot 4.jpg", 
-      "/images-1316/phonot 6.jpg", "/images-1316/phonot 6.jpg", "/images-1316/phonot 7.jpg", "/images-1316/phonot 8.jpg", "/images-1316/phonot 9.jpg", "/images-1316/phonot 10.jpg", 
+    images: ["/images-1316/phonot 1.jpg", "/images-1316/phonot 2.jpg", "/images-1316/phonot 3.jpg", "/images-1316/phonot 4.jpg", "/images-1316/phonot 5.jpg",
+      "/images-1316/phonot 6.jpg", "/images-1316/phonot 7.jpg", "/images-1316/phonot 8.jpg", "/images-1316/phonot 9.jpg", "/images-1316/phonot 10.jpg", 
       "/images-1316/phonot 11.jpg", "/images-1316/phonot 12.jpg", "/images-1316/phonot 13.jpg"],
     additionalInfo: {
       en: `🏡 Large Private Room for Rent in the Heart of Dinkytown – Available NOW

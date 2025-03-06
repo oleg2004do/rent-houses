@@ -5,7 +5,7 @@ import { useParams } from "next/navigation"
 
 export default function NotFound() {
   const params = useParams()
-  const locale = params.locale || "en"
+  const locale = (params.locale as string) || "en"
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">

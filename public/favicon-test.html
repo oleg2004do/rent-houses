@@ -2,12 +2,38 @@
 <html>
 <head>
   <title>Favicon Test</title>
-  <link rel="icon" type="image/png" href="/gmail.png" />
+  <link rel="icon" href="/JOURNEY-UA.png" />
+  <link rel="shortcut icon" href="/JOURNEY-UA.png" />
+  <link rel="apple-touch-icon" href="/JOURNEY-UA.png" />
+  <script>
+    // Скрипт для оновлення favicon при завантаженні сторінки
+    window.onload = function() {
+      var timestamp = new Date().getTime();
+      var iconUrl = '/JOURNEY-UA.png?v=' + timestamp;
+      
+      var iconTypes = [
+        { rel: "icon", type: "image/png" },
+        { rel: "shortcut icon", type: "image/png" },
+        { rel: "apple-touch-icon", type: "image/png" }
+      ];
+      
+      iconTypes.forEach(function(iconType) {
+        var link = document.querySelector('link[rel="' + iconType.rel + '"]');
+        if (!link) {
+          link = document.createElement('link');
+          link.rel = iconType.rel;
+          link.type = iconType.type;
+          document.head.appendChild(link);
+        }
+        link.href = iconUrl;
+      });
+    };
+  </script>
 </head>
 <body>
   <h1>Favicon Test Page</h1>
+  <p>Ця сторінка тестує відображення favicon.</p>
   <p>Якщо ви бачите іконку у вкладці браузера, значить все працює правильно!</p>
-  <p>Тепер ми можемо використати цей самий підхід у нашому додатку Next.js.</p>
 </body>
 </html>
 

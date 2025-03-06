@@ -1,12 +1,13 @@
 import { houses } from "@/data/houses"
 import HouseDetailsClient from "./house-details-client"
 
-// Вказуємо, що цей компонент повинен рендеритися динамічно
-export const dynamic = "force-dynamic"
+export const dynamic = "force-static"
+
+// Визначаємо підтримувані локалі
+const locales = ["en", "uk", "es"]
 
 // Функція generateStaticParams для статичного експорту
 export function generateStaticParams() {
-  const locales = ["en", "uk", "es"]
   const params = []
 
   // Генеруємо всі можливі комбінації локалей та ID будинків

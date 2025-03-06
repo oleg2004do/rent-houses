@@ -2,61 +2,59 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useTranslations } from "next-intl"
-import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import enMessages from "@/messages/en.json"
+import ukMessages from "@/messages/uk.json"
+import esMessages from "@/messages/es.json"
 
-const Navbar = () => {
-  const t = useTranslations("navbar")
-  const pathname = usePathname()
-  const router = useRouter()
-  const [currentLocale, setCurrentLocale] = useState("en")
+const Navbar = ({ locale }: { locale: string }) => {
+  // Вбудована функція для отримання перекладів
+  const getTranslations = () => {
+    if (locale === "uk") return ukMessages.navbar
+    if (locale === "es") return esMessages.navbar
+    return enMessages.navbar
+  }
+
+  const t = getTranslations()
+  const [currentLocale, setCurrentLocale] = useState(locale)
   const [isChangingLanguage, setIsChangingLanguage] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    // Визначаємо поточну локаль з URL
-    const pathLocale = pathname?.split("/")[1]
-    if (pathLocale && ["en", "uk", "es"].includes(pathLocale)) {
-      setCurrentLocale(pathLocale)
-      localStorage.setItem("userLocale", pathLocale)
-    } else {
-      const savedLocale = localStorage.getItem("userLocale") || "en"
-      setCurrentLocale(savedLocale)
-    }
-  }, [pathname])
+    const savedLocale = localStorage.getItem("userLocale") || locale
+    setCurrentLocale(savedLocale)
+  }, [locale])
 
-  const switchLanguage = async (locale: string) => {
+  const switchLanguage = async (newLocale: string) => {
     if (!mounted || isChangingLanguage) return
 
     try {
       setIsChangingLanguage(true)
 
       // Зберігаємо нову локаль
-      localStorage.setItem("userLocale", locale)
-      setCurrentLocale(locale)
+      localStorage.setItem("userLocale", newLocale)
+      setCurrentLocale(newLocale)
 
       // Отримуємо новий шлях
-      const currentPath = pathname || "/"
-      const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${locale}`)
+      const currentPath = window.location.pathname
+      const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${newLocale}`)
 
-      // Перенаправляємо на новий шлях
-      router.push(newPath)
+      // Перезавантажуємо сторінку з новим шляхом
+      window.location.href = newPath
     } catch (error) {
       console.error("Error changing language:", error)
+      // Повертаємо попередню локаль
+      setCurrentLocale(localStorage.getItem("userLocale") || locale)
     } finally {
-      // Затримка перед скиданням стану
-      setTimeout(() => {
-        setIsChangingLanguage(false)
-      }, 500)
+      setIsChangingLanguage(false)
     }
   }
 
   const languages = [
     { code: "en", flag: "/flags/usa.png", label: "English" },
-    { code: "uk", flag: "/flags/ukraine.png", label: "Українська" },
-    { code: "es", flag: "/flags/spain.png", label: "Español" },
+    { code: "uk", flag: "/flags/ua.png", label: "Українська" },
+    { code: "es", flag: "/flags/es.png", label: "Español" },
   ]
 
   // Не рендеримо нічого до монтування компонента
@@ -69,7 +67,7 @@ const Navbar = () => {
           <div>
             <Link href={`/${currentLocale}`} className="flex items-center py-4 px-2">
               <Image src="/rent.png" alt="Rent Icon" width={32} height={32} className="mr-2" priority />
-              <span className="font-semibold text-gray-500 text-lg">{t("home")}</span>
+              <span className="font-semibold text-gray-500 text-lg">{t.home}</span>
             </Link>
           </div>
           <div className="flex items-center space-x-3">

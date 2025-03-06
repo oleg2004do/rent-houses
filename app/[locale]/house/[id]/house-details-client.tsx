@@ -3,9 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useTranslations } from "next-intl"
-import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
 import type { House } from "@/types"
+import enMessages from "@/messages/en.json"
+import ukMessages from "@/messages/uk.json"
+import esMessages from "@/messages/es.json"
 
 interface HouseDetailsClientProps {
   house: House | null
@@ -13,25 +15,23 @@ interface HouseDetailsClientProps {
 }
 
 export default function HouseDetailsClient({ house, params }: HouseDetailsClientProps) {
-  const t = useTranslations("house")
+  const locale = params.locale
+
+  // Вбудована функція для отримання перекладів
+  const getTranslations = () => {
+    if (locale === "uk") return ukMessages.house
+    if (locale === "es") return esMessages.house
+    return enMessages.house
+  }
+
+  const t = getTranslations()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false)
+  const [zoomLevel, setZoomLevel] = useState(1)
 
   if (!house) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">{t("notFound")}</h1>
-          <Link
-            href={`/${params.locale}`}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-          >
-            {t("backToHome")}
-          </Link>
-        </div>
-      </div>
-    )
+    return <div>{t.notFound}</div>
   }
 
   const images = house.images && house.images.length > 0 ? house.images : ["/placeholder.svg"]
@@ -46,13 +46,24 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
 
   const openModal = () => {
     setIsModalOpen(true)
+    setZoomLevel(1) // Скидаємо рівень зуму при відкритті модального вікна
   }
 
   const closeModal = () => {
     setIsModalOpen(false)
   }
 
-  const locale = params.locale || "en"
+  const zoomIn = () => {
+    setZoomLevel((prev) => Math.min(prev + 0.2, 3))
+  }
+
+  const zoomOut = () => {
+    setZoomLevel((prev) => Math.max(prev - 0.2, 0.5))
+  }
+
+  const resetZoom = () => {
+    setZoomLevel(1)
+  }
 
   const getDescription = (house: House, locale: string): string => {
     return house.description[locale as keyof typeof house.description] || house.description.en
@@ -138,7 +149,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
                 prevImage()
               }}
               className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
-              aria-label={t("previousImage")}
+              aria-label={t.previousImage}
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
@@ -148,7 +159,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
                 nextImage()
               }}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
-              aria-label={t("nextImage")}
+              aria-label={t.nextImage}
             >
               <ChevronRight className="h-6 w-6" />
             </button>
@@ -160,10 +171,10 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
       </div>
 
       <p className="text-xl mb-2">
-        {t("price")}: {house.price}
+        {t.price}: {house.price}
       </p>
       <p className="text-lg mb-2">
-        {t("address")}: {house.address}
+        {t.address}: {house.address}
       </p>
       <p className="mb-4">{getDescription(house, locale)}</p>
 
@@ -173,7 +184,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
             onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
           >
-            {showAdditionalInfo ? t("hideAdditionalInfo") : t("showAdditionalInfo")}
+            {showAdditionalInfo ? t.hideAdditionalInfo : t.showAdditionalInfo}
           </button>
           {showAdditionalInfo && (
             <div className="mt-4 p-6 bg-gray-100 rounded-lg">
@@ -187,50 +198,47 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         href={`/${params.locale}`}
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
       >
-        {t("backToHome")}
+        {t.backToHome}
       </Link>
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="relative w-full h-full flex items-center justify-center">
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-white p-2"
-              aria-label={t("closeGallery")}
-            >
+            <button onClick={closeModal} className="absolute top-4 right-4 text-white p-2" aria-label={t.closeGallery}>
               <X className="h-6 w-6" />
             </button>
-
-            {/* Стрілка для попереднього зображення */}
-            <button
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white p-2 bg-black bg-opacity-30 rounded-full hover:bg-opacity-50"
-              aria-label={t("previousImage")}
-            >
+            <button onClick={prevImage} className="absolute left-4 text-white p-2" aria-label={t.previousImage}>
               <ChevronLeft className="h-8 w-8" />
             </button>
 
-            {/* Зображення без зуму */}
-            <div className="w-full h-full flex items-center justify-center">
-              <Image
-                src={images[currentImageIndex] || "/placeholder.svg"}
-                alt={`${house.name} - Full size image ${currentImageIndex + 1}`}
-                width={1200}
-                height={900}
-                className="max-w-full max-h-full object-contain"
-              />
+            {/* Простий варіант зуму */}
+            <div className="overflow-auto w-full h-full flex items-center justify-center">
+              <div style={{ transform: `scale(${zoomLevel})`, transition: "transform 0.2s" }}>
+                <Image
+                  src={images[currentImageIndex] || "/placeholder.svg"}
+                  alt={`${house.name} - Full size image ${currentImageIndex + 1}`}
+                  width={1200}
+                  height={900}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
             </div>
 
-            {/* Стрілка для наступного зображення */}
-            <button
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white p-2 bg-black bg-opacity-30 rounded-full hover:bg-opacity-50"
-              aria-label={t("nextImage")}
-            >
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              <button onClick={zoomIn} className="bg-white bg-opacity-75 p-2 rounded-full">
+                <ZoomIn className="h-6 w-6" />
+              </button>
+              <button onClick={zoomOut} className="bg-white bg-opacity-75 p-2 rounded-full">
+                <ZoomOut className="h-6 w-6" />
+              </button>
+              <button onClick={resetZoom} className="bg-white bg-opacity-75 p-2 rounded-full text-sm">
+                Reset
+              </button>
+            </div>
+
+            <button onClick={nextImage} className="absolute right-4 text-white p-2" aria-label={t.nextImage}>
               <ChevronRight className="h-8 w-8" />
             </button>
-
-            {/* Індикатор поточного зображення */}
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-2 py-1 rounded">
               {currentImageIndex + 1} / {images.length}
             </div>

@@ -2,22 +2,30 @@ import type React from "react"
 import "../globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { NextIntlClientProvider } from "next-intl"
-import { notFound } from "next/navigation"
-import Navbar from "@/components/Navbar"
-import Footer from "@/components/Footer"
+import HeadFavicon from "@/components/HeadFavicon"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Journey UA",
   description: "Find your dream home with Journey UA",
+  icons: {
+    icon: [
+      { url: "/JOURNEY-UA.png", sizes: "16x16", type: "image/png" },
+      { url: "/JOURNEY-UA.png", sizes: "32x32", type: "image/png" },
+      { url: "/JOURNEY-UA.png", sizes: "48x48", type: "image/png" },
+      { url: "/JOURNEY-UA.png", sizes: "192x192", type: "image/png" },
+      { url: "/JOURNEY-UA.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: [{ url: "/JOURNEY-UA.png" }],
+    apple: [{ url: "/JOURNEY-UA.png", sizes: "1024x1024", type: "image/png" }],
+  },
 }
 
-// Встановлюємо динамічний режим
-export const dynamic = "force-dynamic"
+// Визначаємо підтримувані локалі
+const locales = ["en", "uk", "es"]
 
-export default async function LocaleLayout({
+export default function LocaleLayout({
   children,
   params: { locale },
 }: {
@@ -25,37 +33,24 @@ export default async function LocaleLayout({
   params: { locale: string }
 }) {
   // Перевіряємо, чи локаль підтримується
-  const locales = ["en", "uk", "es"]
   if (!locales.includes(locale)) {
-    notFound()
-  }
-
-  // Завантажуємо повідомлення
-  let messages
-  try {
-    messages = (await import(`../../messages/${locale}.json`)).default
-  } catch (error) {
-    console.error(`Failed to load messages for locale: ${locale}`, error)
-    notFound()
+    return null
   }
 
   return (
     <html lang={locale}>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link
-          rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 fontSize=%2290%22>🇺🇦</text></svg>"
-        />
+        <HeadFavicon />
       </head>
-      <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Navbar />
-          <div className="flex-grow">{children}</div>
-          <Footer />
-        </NextIntlClientProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }
+
+// Генеруємо статичні параметри для всіх підтримуваних локалей
+export function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "uk" }, { locale: "es" }]
+}
+
+export const dynamic = "force-static"
 

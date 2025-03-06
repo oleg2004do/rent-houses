@@ -3,15 +3,21 @@
 import Link from "next/link"
 import Image from "next/image"
 import { houses } from "@/data/houses"
-import { useTranslations } from "next-intl"
-import { useParams } from "next/navigation"
-import type { House } from "@/types"
 import { useState, useEffect } from "react"
+import type { House } from "@/types"
+import enMessages from "@/messages/en.json"
+import ukMessages from "@/messages/uk.json"
+import esMessages from "@/messages/es.json"
 
-const HouseList = () => {
-  const t = useTranslations("house")
-  const params = useParams()
-  const locale = (params.locale as string) || "en"
+const HouseList = ({ locale }: { locale: string }) => {
+  // Вбудована функція для отримання перекладів
+  const getTranslations = () => {
+    if (locale === "uk") return ukMessages.house
+    if (locale === "es") return esMessages.house
+    return enMessages.house
+  }
+
+  const t = getTranslations()
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -42,10 +48,10 @@ const HouseList = () => {
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-2">{house.name}</h2>
             <p className="text-gray-600 mb-2">
-              {t("price")}: {house.price}
+              {t.price}: {house.price}
             </p>
             <p className="text-gray-600 mb-2">
-              {t("address")}: {house.address}
+              {t.address}: {house.address}
             </p>
             <p className="text-gray-600 mb-4">
               {typeof house.description === "string"
@@ -56,7 +62,7 @@ const HouseList = () => {
               href={`/${locale}/house/${house.id}`}
               className="inline-block w-full text-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
             >
-              {t("viewDetails")}
+              {t.viewDetails}
             </Link>
           </div>
         </div>
