@@ -13,15 +13,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Вимикаємо експериментальні функції, які можуть викликати проблеми
-  experimental: {
-    // webpackBuildWorker: true,
-    // parallelServerBuildTraces: true,
-    // parallelServerCompiles: true,
-  },
-  // Налаштування для динамічного рендерингу
-  staticPageGenerationTimeout: 1000,
-  // Вимикаємо строгий режим для запобігання помилок
+  // Вимикаємо експериментальні функції
+  experimental: {},
+  // Вимикаємо строгий режим
   reactStrictMode: false,
 };
 

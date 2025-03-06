@@ -1,40 +1,25 @@
-import createMiddleware from "next-intl/middleware"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 const locales = ["en", "uk", "es"]
 
-// Створюємо middleware для інтернаціоналізації
-const intlMiddleware = createMiddleware({
-  locales,
-  defaultLocale: "en",
-  localePrefix: "always",
-})
-
-export default async function middleware(request: NextRequest) {
+// Спрощуємо middleware для усунення можливих помилок
+export default function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Додаємо обробку помилок
-  try {
-    // Отримуємо поточну локаль з URL
-    const locale = pathname.split("/")[1]
-
-    // Якщо локаль не вказана або невірна, перенаправляємо на англійську
-    if (!locale || !locales.includes(locale)) {
-      const defaultLocale = "en"
-      const newUrl = new URL(`/${defaultLocale}${pathname}`, request.url)
-      return NextResponse.redirect(newUrl)
-    }
-
-    // Застосовуємо middleware для інтернаціоналізації
-    return intlMiddleware(request)
-  } catch (error) {
-    console.error("Middleware error:", error)
-
-    // У випадку помилки перенаправляємо на домашню сторінку англійською
-    const newUrl = new URL("/en", request.url)
-    return NextResponse.redirect(newUrl)
+  // Якщо шлях починається з /_next, /api, або має розширення файлу, пропускаємо
+  if (pathname.startsWith("/_next") || pathname.startsWith("/api") || pathname.includes(".")) {
+    return NextResponse.next()
   }
+
+  // Перевіряємо, чи URL вже містить локаль
+  const pathnameHasLocale = locales.some((locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`)
+
+  if (pathnameHasLocale) return NextResponse.next()
+
+  // Перенаправляємо на URL з локаллю
+  const locale = "en" // Використовуємо англійську як стандартну
+  return NextResponse.redirect(new URL(`/${locale}${pathname}`, request.url))
 }
 
 export const config = {
