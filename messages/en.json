@@ -6,7 +6,7 @@
     "housingDescription": "We know how important it is to have a warm and reliable place, especially when you're just arriving in a new city. That's why our team is ready to help you find housing quickly, simply, and without stress.",
     "offerTitle": "What we offer?",
     "offerList": [
-      "✅ Furnished rooms – move in right away without extra expenses",
+      "<FaCheckSquare /> Furnished rooms – move in right away without extra expenses",
       "✅ No deposit – no need to pay a large sum upfront",
       "✅ No credit check – it won't be an obstacle",
       "✅ No proof of employment – no need to wait for a contract or certificate",

@@ -4,6 +4,7 @@ import HouseList from "@/components/HouseList"
 import enMessages from "@/messages/en.json"
 import ukMessages from "@/messages/uk.json"
 import esMessages from "@/messages/es.json"
+import { FaCheckSquare } from "react-icons/fa";
 
 export const dynamic = "force-static"
 
