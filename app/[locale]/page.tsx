@@ -1,6 +1,14 @@
 import HouseList from "@/components/HouseList"
 import { useTranslations } from "next-intl"
 
+// Вказуємо, що цей компонент повинен рендеритися динамічно
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
+export function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "uk" }, { locale: "es" }]
+}
+
 export default function Home() {
   const t = useTranslations("home")
 

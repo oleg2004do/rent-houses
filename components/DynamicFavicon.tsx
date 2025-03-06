@@ -4,32 +4,49 @@ import { useEffect } from "react"
 
 export default function DynamicFavicon() {
   useEffect(() => {
-    // Функція для динамічної зміни favicon
-    const updateFavicon = () => {
-      // Додаємо timestamp для обходу кешування
-      const timestamp = Date.now()
+    // Функція для встановлення favicon
+    const setFavicon = () => {
+      try {
+        // Додаємо timestamp для запобігання кешуванню
+        const timestamp = Date.now()
+        const iconUrl = `/JOURNEY-UA.png?v=${timestamp}`
 
-      // Знаходимо і��нуючий link елемент або створюємо новий
-      let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement
-      if (!link) {
-        link = document.createElement("link")
-        link.rel = "icon"
-        document.head.appendChild(link)
+        // Типи іконок, які ми хочемо додати
+        const iconTypes = [
+          { rel: "icon", type: "image/png" },
+          { rel: "shortcut icon", type: "image/png" },
+          { rel: "apple-touch-icon", type: "image/png" },
+        ]
+
+        // Для кожного типу іконки
+        iconTypes.forEach((iconType) => {
+          // Шукаємо існуючий елемент з таким rel
+          let link = document.querySelector(`link[rel="${iconType.rel}"]`) as HTMLLinkElement
+
+          // Якщо елемент не знайдено, створюємо новий
+          if (!link) {
+            link = document.createElement("link")
+            link.rel = iconType.rel
+            link.type = iconType.type
+            document.head.appendChild(link)
+          }
+
+          // Оновлюємо URL іконки
+          link.href = iconUrl
+        })
+      } catch (error) {
+        console.error("Error setting favicon:", error)
       }
-
-      // Оновлюємо атрибути
-      link.href = `/JOURNEY-UA.png?v=${timestamp}`
-      link.type = "image/png"
     }
 
-    // Викликаємо функцію при завантаженні компонента
-    updateFavicon()
+    // Встановлюємо іконку при завантаженні
+    setFavicon()
 
-    // Також оновлюємо іконку при фокусі на вікні
-    window.addEventListener("focus", updateFavicon)
+    // Встановлюємо іконку при фокусі на вікні
+    window.addEventListener("focus", setFavicon)
 
     return () => {
-      window.removeEventListener("focus", updateFavicon)
+      window.removeEventListener("focus", setFavicon)
     }
   }, [])
 

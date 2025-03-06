@@ -13,54 +13,17 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Вимикаємо експериментальні функції, які можуть викликати проблеми
   experimental: {
-    webpackBuildWorker: true,
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
+    // webpackBuildWorker: true,
+    // parallelServerBuildTraces: true,
+    // parallelServerCompiles: true,
   },
-  // Add these Vercel-specific configurations
-  productionBrowserSourceMaps: true,
-  poweredByHeader: false,
-  reactStrictMode: true,
+  // Налаштування для динамічного рендерингу
+  staticPageGenerationTimeout: 1000,
+  // Вимикаємо строгий режим для запобігання помилок
+  reactStrictMode: false,
 };
 
-// Функція для об'єднання конфігурацій
-function mergeConfig(baseConfig, userConfig) {
-  if (!userConfig) {
-    return baseConfig;
-  }
-
-  const mergedConfig = { ...baseConfig };
-
-  for (const key in userConfig) {
-    if (
-      typeof baseConfig[key] === 'object' &&
-      !Array.isArray(baseConfig[key])
-    ) {
-      mergedConfig[key] = {
-        ...baseConfig[key],
-        ...userConfig[key],
-      };
-    } else {
-      mergedConfig[key] = userConfig[key];
-    }
-  }
-
-  return mergedConfig;
-}
-
-// Спроба імпортувати користувацьку конфігурацію
-let userConfig;
-try {
-  userConfig = await import('./v0-user-next.config.mjs');
-} catch (e) {
-  // Ігноруємо помилку, якщо файл не існує
-  userConfig = {};
-}
-
-// Об'єднуємо конфігурації
-const finalConfig = mergeConfig(nextConfig, userConfig.default || userConfig);
-
-// Застосовуємо next-intl до фінальної конфігурації
-export default withNextIntl(finalConfig);
+export default withNextIntl(nextConfig);
 
