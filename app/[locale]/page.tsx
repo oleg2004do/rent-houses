@@ -4,7 +4,6 @@ import HouseList from "@/components/HouseList"
 import enMessages from "@/messages/en.json"
 import ukMessages from "@/messages/uk.json"
 import esMessages from "@/messages/es.json"
-import { FaCheckSquare } from "react-icons/fa";
 
 export const dynamic = "force-static"
 
@@ -34,7 +33,7 @@ export default function Home({ params }: { params: { locale: string } }) {
         <ul className="mb-6 space-y-2">
           {t.offerList.map((item: string, index: number) => (
             <li key={index} className="flex items-start">
-              <span className="mr-2">{<FaCheckSquare />}{item.substring(0, 2)}</span>
+              <span className="mr-2">{item.substring(0, 2)}</span>
               <span>{item.substring(2)}</span>
             </li>
           ))}

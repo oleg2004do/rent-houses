@@ -19,6 +19,7 @@ const HouseList = ({ locale }: { locale: string }) => {
 
   const t = getTranslations()
   const [isMobile, setIsMobile] = useState(false)
+  const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({})
 
   useEffect(() => {
     const checkMobile = () => {
@@ -28,6 +29,17 @@ const HouseList = ({ locale }: { locale: string }) => {
     checkMobile()
     window.addEventListener("resize", checkMobile)
 
+    // Прелоад зображень
+    houses.forEach((house) => {
+      if (house.images && house.images.length > 0) {
+        const img = new (window.Image as any)()
+        img.src = house.images[0]
+        img.onload = () => {
+          setImagesLoaded((prev) => ({ ...prev, [house.id]: true }))
+        }
+      }
+    })
+
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
@@ -36,13 +48,25 @@ const HouseList = ({ locale }: { locale: string }) => {
       {houses.map((house: House) => (
         <div key={house.id} className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="relative w-full h-48">
+            {/* Плейсхолдер, який показується до завантаження зображення */}
+            <div
+              className={`absolute inset-0 bg-gray-200 animate-pulse ${imagesLoaded[house.id] ? "opacity-0" : "opacity-100"}`}
+              style={{ transition: "opacity 0.3s ease-in-out" }}
+            />
+
             <Image
               src={house.images && house.images.length > 0 ? house.images[0] : "/placeholder.svg"}
               alt={house.name}
               fill
-              style={{ objectFit: "cover" }}
-              loading="lazy"
+              style={{
+                objectFit: "cover",
+                opacity: imagesLoaded[house.id] ? 1 : 0,
+                transition: "opacity 0.3s ease-in-out",
+              }}
+              loading="eager" // Завантажуємо перші зображення одразу
+              priority={house.id <= 3} // Пріоритет для перших трьох будинків
               sizes={isMobile ? "100vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
+              onLoad={() => setImagesLoaded((prev) => ({ ...prev, [house.id]: true }))}
             />
           </div>
           <div className="p-4">

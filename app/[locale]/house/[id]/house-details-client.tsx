@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
@@ -29,12 +29,34 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showAdditionalInfo, setShowAdditionalInfo] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([])
+  const [preloadedImages, setPreloadedImages] = useState<boolean[]>([])
 
   if (!house) {
     return <div>{t.notFound}</div>
   }
 
   const images = house.images && house.images.length > 0 ? house.images : ["/placeholder.svg"]
+
+  // Прелоад всіх зображень будинку
+  useEffect(() => {
+    const newPreloadedImages = Array(images.length).fill(false)
+
+    images.forEach((src, index) => {
+      const img = new (window.Image as any)()
+      img.src = src
+      img.onload = () => {
+        setPreloadedImages((prev) => {
+          const newState = [...prev]
+          newState[index] = true
+          return newState
+        })
+      }
+    })
+
+    setImagesLoaded(Array(images.length).fill(false))
+    setPreloadedImages(newPreloadedImages)
+  }, [images])
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1))
@@ -128,19 +150,58 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
     })
   }
 
+  // Прелоад наступного і попереднього зображення
+  useEffect(() => {
+    if (images.length <= 1) return
+
+    const nextIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1
+    const prevIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1
+
+    const preloadNext = new (window.Image as any)()
+    preloadNext.src = images[nextIndex]
+
+    const preloadPrev = new (window.Image as any)()
+    preloadPrev.src = images[prevIndex]
+  }, [currentImageIndex, images])
+
+  // Блокування прокрутки при відкритому модальному вікні
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "auto"
+    }
+
+    return () => {
+      document.body.style.overflow = "auto"
+    }
+  }, [isModalOpen])
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-4">{house.name}</h1>
 
       <div className="relative mb-4">
+        {/* Плейсхолдер для зображення */}
+        <div
+          className={`w-full h-96 bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
+        />
+
         <Image
           src={images[currentImageIndex] || "/placeholder.svg"}
           alt={`${house.name} - Image ${currentImageIndex + 1}`}
           width={800}
           height={600}
-          className="w-full h-96 object-cover rounded-lg cursor-pointer"
+          className={`w-full h-96 object-cover rounded-lg cursor-pointer ${imagesLoaded[currentImageIndex] ? "block" : "hidden"}`}
           onClick={openModal}
+          priority={true}
+          onLoad={() => {
+            const newImagesLoaded = [...imagesLoaded]
+            newImagesLoaded[currentImageIndex] = true
+            setImagesLoaded(newImagesLoaded)
+          }}
         />
+
         {images.length > 1 && (
           <>
             <button
@@ -148,20 +209,20 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
                 e.stopPropagation()
                 prevImage()
               }}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
               aria-label={t.previousImage}
             >
-              <ChevronLeft className="h-6 w-6" />
+              <ChevronLeft className="h-6 w-6 text-white" />
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 nextImage()
               }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
               aria-label={t.nextImage}
             >
-              <ChevronRight className="h-6 w-6" />
+              <ChevronRight className="h-6 w-6 text-white" />
             </button>
           </>
         )}
@@ -201,17 +262,38 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         {t.backToHome}
       </Link>
 
+      {/* Модальне вікно для перегляду зображень */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
           <div className="relative w-full h-full flex items-center justify-center">
-            <button onClick={closeModal} className="absolute top-4 right-4 text-white p-2" aria-label={t.closeGallery}>
-              <X className="h-6 w-6" />
-            </button>
-            <button onClick={prevImage} className="absolute left-4 text-white p-2" aria-label={t.previousImage}>
-              <ChevronLeft className="h-8 w-8" />
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 p-3 z-20 bg-black bg-opacity-70 rounded-full"
+              aria-label={t.closeGallery}
+            >
+              <X className="h-8 w-8 text-white" />
             </button>
 
-            {/* Простий варіант зуму */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 z-20 bg-black bg-opacity-70 rounded-full"
+                  aria-label={t.previousImage}
+                >
+                  <ChevronLeft className="h-10 w-10 text-white" />
+                </button>
+
+                <button
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 z-20 bg-black bg-opacity-70 rounded-full"
+                  aria-label={t.nextImage}
+                >
+                  <ChevronRight className="h-10 w-10 text-white" />
+                </button>
+              </>
+            )}
+
             <div className="overflow-auto w-full h-full flex items-center justify-center">
               <div style={{ transform: `scale(${zoomLevel})`, transition: "transform 0.2s" }}>
                 <Image
@@ -220,26 +302,24 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
                   width={1200}
                   height={900}
                   className="max-w-full max-h-full object-contain"
+                  priority={true}
                 />
               </div>
             </div>
 
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              <button onClick={zoomIn} className="bg-white bg-opacity-75 p-2 rounded-full">
+              <button onClick={zoomIn} className="bg-black bg-opacity-70 p-2 rounded-full text-white">
                 <ZoomIn className="h-6 w-6" />
               </button>
-              <button onClick={zoomOut} className="bg-white bg-opacity-75 p-2 rounded-full">
+              <button onClick={zoomOut} className="bg-black bg-opacity-70 p-2 rounded-full text-white">
                 <ZoomOut className="h-6 w-6" />
               </button>
-              <button onClick={resetZoom} className="bg-white bg-opacity-75 p-2 rounded-full text-sm">
+              <button onClick={resetZoom} className="bg-black bg-opacity-70 p-2 rounded-full text-white text-sm">
                 Reset
               </button>
             </div>
 
-            <button onClick={nextImage} className="absolute right-4 text-white p-2" aria-label={t.nextImage}>
-              <ChevronRight className="h-8 w-8" />
-            </button>
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-2 py-1 rounded">
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full">
               {currentImageIndex + 1} / {images.length}
             </div>
           </div>
