@@ -9,12 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Вимикаємо експериментальні функції
-  experimental: {},
-  // Вимикаємо строгий режим
-  reactStrictMode: false,
-  // Налаштування для статичних файлів
-  output: 'export',
+  // Видаляємо налаштування статичного експорту
+  // output: 'export',
 };
 
 export default nextConfig;
