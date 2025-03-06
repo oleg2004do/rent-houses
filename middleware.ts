@@ -1,9 +1,16 @@
+import createMiddleware from "next-intl/middleware"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-// Визначаємо підтримувані локалі
 const locales = ["en", "uk", "es"]
 const defaultLocale = "en"
+
+// Створюємо middleware для інтернаціоналізації
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: "always",
+})
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -18,41 +25,21 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Перевіряємо, чи URL вже містить локаль
-  const pathnameHasLocale = locales.some((locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`)
+  try {
+    // Застосовуємо middleware для інтернаціоналізації
+    return intlMiddleware(request)
+  } catch (error) {
+    console.error("Middleware error:", error)
 
-  if (pathnameHasLocale) {
-    return NextResponse.next()
+    // У випадку помилки перенаправляємо на домашню сторінку
+    return NextResponse.redirect(new URL("/", request.url))
   }
-
-  // Якщо це кореневий шлях, пропускаємо запит
-  if (pathname === "/") {
-    return NextResponse.next()
-  }
-
-  // Отримуємо локаль з кукі або заголовків
-  let locale = defaultLocale
-  const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value
-  if (cookieLocale && locales.includes(cookieLocale)) {
-    locale = cookieLocale
-  } else {
-    const acceptLanguage = request.headers.get("accept-language")
-    if (acceptLanguage) {
-      const preferredLocale = acceptLanguage.split(",")[0].split("-")[0].toLowerCase()
-      if (locales.includes(preferredLocale)) {
-        locale = preferredLocale
-      }
-    }
-  }
-
-  // Перенаправляємо на URL з локаллю
-  return NextResponse.redirect(new URL(`/${locale}${pathname === "/" ? "" : pathname}`, request.url))
 }
 
 export const config = {
+  // Налаштовуємо matcher для всіх маршрутів, крім статичних файлів
   matcher: [
-    // Виключаємо всі внутрішні шляхи Next.js
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!_next/static|_next/image|favicon.ico|images|flags|phonot_2.jpg|phonot_3.jpg|JOURNEY-UA.png|logo.png).*)",
   ],
 }
 

@@ -16,9 +16,16 @@ const Navbar = () => {
 
   useEffect(() => {
     setMounted(true)
-    const savedLocale = localStorage.getItem("userLocale") || "en"
-    setCurrentLocale(savedLocale)
-  }, [])
+    // Визначаємо поточну локаль з URL
+    const pathLocale = pathname?.split("/")[1]
+    if (pathLocale && ["en", "uk", "es"].includes(pathLocale)) {
+      setCurrentLocale(pathLocale)
+      localStorage.setItem("userLocale", pathLocale)
+    } else {
+      const savedLocale = localStorage.getItem("userLocale") || "en"
+      setCurrentLocale(savedLocale)
+    }
+  }, [pathname])
 
   const switchLanguage = async (locale: string) => {
     if (!mounted || isChangingLanguage) return
@@ -34,26 +41,22 @@ const Navbar = () => {
       const currentPath = pathname || "/"
       const newPath = currentPath.replace(/^\/[a-z]{2}/, `/${locale}`)
 
-      // М'яка навігація
-      await router.push(newPath, { scroll: false })
-
-      // Перезавантажуємо сторінку після короткої затримки
-      setTimeout(() => {
-        window.location.href = newPath
-      }, 100)
+      // Перенаправляємо на новий шлях
+      router.push(newPath)
     } catch (error) {
       console.error("Error changing language:", error)
-      // Повертаємо попередню локаль
-      setCurrentLocale(localStorage.getItem("userLocale") || "en")
     } finally {
-      setIsChangingLanguage(false)
+      // Затримка перед скиданням стану
+      setTimeout(() => {
+        setIsChangingLanguage(false)
+      }, 500)
     }
   }
 
   const languages = [
     { code: "en", flag: "/flags/usa.png", label: "English" },
     { code: "uk", flag: "/flags/ukraine.png", label: "Українська" },
-    { code: "es", flag: "/flags/spain.png", label: "Español" },
+    { code: "es", flag: "/flags/spain.svg", label: "Español" },
   ]
 
   // Не рендеримо нічого до монтування компонента
@@ -64,14 +67,7 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center">
           <div>
-            <Link
-              href={`/${currentLocale}`}
-              className="flex items-center py-4 px-2"
-              onClick={(e) => {
-                e.preventDefault()
-                router.push(`/${currentLocale}`)
-              }}
-            >
+            <Link href={`/${currentLocale}`} className="flex items-center py-4 px-2">
               <Image src="/rent.png" alt="Rent Icon" width={32} height={32} className="mr-2" priority />
               <span className="font-semibold text-gray-500 text-lg">{t("home")}</span>
             </Link>

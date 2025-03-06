@@ -1,5 +1,6 @@
 import type React from "react"
 import "../globals.css"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { notFound } from "next/navigation"
@@ -7,6 +8,11 @@ import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 
 const inter = Inter({ subsets: ["latin"] })
+
+export const metadata: Metadata = {
+  title: "Journey UA",
+  description: "Find your dream home with Journey UA",
+}
 
 // Встановлюємо динамічний режим
 export const dynamic = "force-dynamic"
@@ -18,7 +24,7 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
-  // Перевіряємо, чи підтримується локаль
+  // Перевіряємо, чи локаль підтримується
   const locales = ["en", "uk", "es"]
   if (!locales.includes(locale)) {
     notFound()

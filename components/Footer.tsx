@@ -40,11 +40,10 @@ const Footer = () => {
               </li>
               <li className="mb-2">
                 <Link href={`mailto:${t("emailAddress")}`} className="flex items-center hover:text-blue-400">
-                <img src="/gmail.png" alt="Instagram" className="w-5 h-5 mr-2" />
+                  <Mail className="w-5 h-5 mr-2" />
                   <span className="text-white hover:text-blue-400">
                     {t("email")}: {t("emailAddress")}
                   </span>
-                  
                 </Link>
               </li>
               <li>
@@ -52,7 +51,7 @@ const Footer = () => {
                   href={`tel:${t("phoneNumber").replace(/\s+/g, "")}`}
                   className="flex items-center hover:text-blue-400"
                 >
-                  <img src="/phone.png" alt="Instagram" className="w-5 h-5 mr-2" />
+                  <Phone className="w-5 h-5 mr-2" />
                   <span className="text-white hover:text-blue-400">
                     {t("phone")}: {t("phoneNumber")}
                   </span>

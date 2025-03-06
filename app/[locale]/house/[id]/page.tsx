@@ -3,7 +3,6 @@ import HouseDetailsClient from "./house-details-client"
 
 // Вказуємо, що цей компонент повинен рендеритися динамічно
 export const dynamic = "force-dynamic"
-export const revalidate = 0
 
 // Функція generateStaticParams для статичного експорту
 export function generateStaticParams() {

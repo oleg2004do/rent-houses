@@ -20,7 +20,19 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
   const [zoomLevel, setZoomLevel] = useState(1)
 
   if (!house) {
-    return <div>{t("notFound")}</div>
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">{t("notFound")}</h1>
+          <Link
+            href={`/${params.locale}`}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
+          >
+            {t("backToHome")}
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   const images = house.images && house.images.length > 0 ? house.images : ["/placeholder.svg"]
@@ -169,7 +181,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
       </p>
       <p className="mb-4">{getDescription(house, locale)}</p>
 
-      {house.additionalInfo && (
+      {house.additionalInfo && getAdditionalInfo(house, locale) && (
         <div className="mb-4">
           <button
             onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
