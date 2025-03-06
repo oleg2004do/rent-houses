@@ -11,6 +11,11 @@ const app = next({
   dev,
   hostname,
   port,
+  conf: {
+    // Додаткові налаштування для логування
+    distDir: ".next",
+    logLevel: "debug",
+  },
 })
 const handle = app.getRequestHandler()
 
@@ -18,16 +23,17 @@ app.prepare().then(() => {
   createServer(async (req, res) => {
     try {
       // Логуємо запити для діагностики
-      console.log(`Request: ${req.method} ${req.url}`)
+      console.log(`${new Date().toISOString()} - Request: ${req.method} ${req.url}`)
 
       // Обробляємо запит
       const parsedUrl = parse(req.url, true)
       await handle(req, res, parsedUrl)
 
       // Логуємо успішні відповіді
-      console.log(`Response: ${res.statusCode} ${req.url}`)
+      console.log(`${new Date().toISOString()} - Response: ${res.statusCode} ${req.url}`)
     } catch (err) {
-      console.error("Error occurred handling", req.url, err)
+      console.error(`${new Date().toISOString()} - Error:`, err)
+      console.error("Stack trace:", err.stack)
       res.statusCode = 500
       res.end("Internal Server Error")
     }
