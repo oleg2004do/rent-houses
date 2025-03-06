@@ -37,9 +37,10 @@ app.prepare().then(() => {
       res.statusCode = 500
       res.end("Internal Server Error")
     }
-  }).listen(port, (err) => {
+  }).listen(port, "0.0.0.0", (err) => {
+    // Змінено з 'localhost' на '0.0.0.0'
     if (err) throw err
-    console.log(`> Ready on http://${hostname}:${port}`)
+    console.log(`> Ready on http://0.0.0.0:${port}`) // Змінено з 'localhost' на '0.0.0.0'
   })
 })
 
