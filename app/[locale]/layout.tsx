@@ -2,6 +2,7 @@ import type React from "react"
 import "../globals.css"
 import { Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
+import { notFound } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 
@@ -17,14 +18,19 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
-  // Спрощений підхід до завантаження повідомлень
+  // Перевіряємо, чи підтримується локаль
+  const locales = ["en", "uk", "es"]
+  if (!locales.includes(locale)) {
+    notFound()
+  }
+
+  // Завантажуємо повідомлення
   let messages
   try {
     messages = (await import(`../../messages/${locale}.json`)).default
   } catch (error) {
     console.error(`Failed to load messages for locale: ${locale}`, error)
-    // Використовуємо англійську як запасний варіант
-    messages = (await import(`../../messages/en.json`)).default
+    notFound()
   }
 
   return (
