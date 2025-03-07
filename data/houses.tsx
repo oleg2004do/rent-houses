@@ -13,14 +13,14 @@ export const houses: House[] = [
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-1316/Main.jpg", "/images-1316/Room_1_1.jpg", "/images-1316/Room 1_2.jpg",
+    images: ["/images-1316/Main.jpg", "/images-1316/Room 1_1.jpg", "/images-1316/Room 1_2.jpg",
       "/images-1316/Room 2_1.jpg", "/images-1316/Room 2_2.jpg", "/images-1316/Room 3_1.jpg", "/images-1316/Room 3_2.jpg", 
       "/images-1316/Room 3_3.jpg", "/images-1316/Room 3_4.jpg", "/images-1316/Room 4_1.jpg",
-     "/images-1316/Room 4_2.jpg", "/images-1316/Room 4_3.jpg", "/images-1316/Room 4_4.jpg", "/images-1316/5.jpg",
+     "/images-1316/Room_4_2.jpg", "/images-1316/Room_4_3.jpg", "/images-1316/Room 4_4.jpg", "/images-1316/5.jpg",
      "/images-1316/6.jpg", "/images-1316/7.jpg", "/images-1316/8.jpg", "/images-1316/9.jpg", "/images-1316/10.jpg",
      "/images-1316/11.jpg", "/images-1316/12.jpg", "/images-1316/13.jpg", "/images-1316/14.jpg", "/images-1316/14.jpg",
      "/images-1316/15.jpg", "/images-1316/16.jpg", "/images-1316/17.jpg", "/images-1316/18.jpg", "/images-1316/19.jpg", 
-      "/images-1316/20 Floor Plan1.png", "/images-1316/21 Floor Plan2.png", "/images-1316/22 Floor Plan3.png"],
+      "/images-1316/20 Floor Plan1.jpg", "/images-1316/21 Floor Plan2.jpg", "/images-1316/22 Floor Plan3.jpg"],
     additionalInfo: {
       en: `🏡 Large Private Room for Rent in the Heart of Dinkytown – Available NOW
 
