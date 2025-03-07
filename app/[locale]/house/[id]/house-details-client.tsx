@@ -27,9 +27,9 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
   const t = getTranslations()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [showAdditionalInfo, setShowAdditionalInfo] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([])
+  const [thumbnailsLoaded, setThumbnailsLoaded] = useState<boolean[]>([])
   const [preloadedImages, setPreloadedImages] = useState<boolean[]>([])
 
   if (!house) {
@@ -55,6 +55,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
     })
 
     setImagesLoaded(Array(images.length).fill(false))
+    setThumbnailsLoaded(Array(images.length).fill(false))
     setPreloadedImages(newPreloadedImages)
   }, [images])
 
@@ -184,23 +185,25 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
       <div className="relative mb-4">
         {/* Плейсхолдер для зображення */}
         <div
-          className={`w-full h-96 bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
+          className={`w-full max-h-[600px] bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
         />
 
-        <Image
-          src={images[currentImageIndex] || "/placeholder.svg"}
-          alt={`${house.name} - Image ${currentImageIndex + 1}`}
-          width={800}
-          height={600}
-          className={`w-full h-96 object-cover rounded-lg cursor-pointer ${imagesLoaded[currentImageIndex] ? "block" : "hidden"}`}
-          onClick={openModal}
-          priority={true}
-          onLoad={() => {
-            const newImagesLoaded = [...imagesLoaded]
-            newImagesLoaded[currentImageIndex] = true
-            setImagesLoaded(newImagesLoaded)
-          }}
-        />
+        <div className="flex justify-center">
+          <Image
+            src={images[currentImageIndex] || "/placeholder.svg"}
+            alt={`${house.name} - Image ${currentImageIndex + 1}`}
+            width={800}
+            height={600}
+            className={`max-h-[600px] w-auto object-contain rounded-lg cursor-pointer ${imagesLoaded[currentImageIndex] ? "block" : "hidden"}`}
+            onClick={openModal}
+            priority={true}
+            onLoad={() => {
+              const newImagesLoaded = [...imagesLoaded]
+              newImagesLoaded[currentImageIndex] = true
+              setImagesLoaded(newImagesLoaded)
+            }}
+          />
+        </div>
 
         {images.length > 1 && (
           <>
@@ -231,6 +234,38 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         </div>
       </div>
 
+      {/* Мініатюри зображень */}
+      {images.length > 1 && (
+        <div className="flex overflow-x-auto space-x-2 mb-6 pb-2">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className={`relative min-w-[100px] h-[75px] rounded-md overflow-hidden cursor-pointer border-2 ${
+                index === currentImageIndex ? "border-blue-500" : "border-transparent"
+              }`}
+              onClick={() => setCurrentImageIndex(index)}
+            >
+              {/* Плейсхолдер для мініатюри */}
+              <div
+                className={`absolute inset-0 bg-gray-200 animate-pulse ${thumbnailsLoaded[index] ? "hidden" : "block"}`}
+              />
+              <Image
+                src={image || "/placeholder.svg"}
+                alt={`${house.name} - Thumbnail ${index + 1}`}
+                fill
+                sizes="100px"
+                className={`object-cover ${thumbnailsLoaded[index] ? "opacity-100" : "opacity-0"}`}
+                onLoad={() => {
+                  const newThumbnailsLoaded = [...thumbnailsLoaded]
+                  newThumbnailsLoaded[index] = true
+                  setThumbnailsLoaded(newThumbnailsLoaded)
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
       <p className="text-xl mb-2">
         {t.price}: {house.price}
       </p>
@@ -247,19 +282,10 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
       </p>
       <p className="mb-4">{getDescription(house, locale)}</p>
 
+      {/* Додаткова інформація (тепер відображається одразу) */}
       {house.additionalInfo && getAdditionalInfo(house, locale) && (
-        <div className="mb-4">
-          <button
-            onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-          >
-            {showAdditionalInfo ? t.hideAdditionalInfo : t.showAdditionalInfo}
-          </button>
-          {showAdditionalInfo && (
-            <div className="mt-4 p-6 bg-gray-100 rounded-lg">
-              {renderAdditionalInfo(getAdditionalInfo(house, locale))}
-            </div>
-          )}
+        <div className="mt-4 p-6 bg-gray-100 rounded-lg mb-6">
+          {renderAdditionalInfo(getAdditionalInfo(house, locale))}
         </div>
       )}
 
