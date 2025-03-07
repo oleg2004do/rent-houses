@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
@@ -30,73 +30,165 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
   const [zoomLevel, setZoomLevel] = useState(1)
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([])
   const [thumbnailsLoaded, setThumbnailsLoaded] = useState<boolean[]>([])
-  const [preloadedImages, setPreloadedImages] = useState<boolean[]>([])
+  const [isChangingImage, setIsChangingImage] = useState(false)
 
+  // Перевіряємо, чи є будинок
   if (!house) {
     return <div>{t.notFound}</div>
   }
 
-  const images = house.images && house.images.length > 0 ? house.images : ["/placeholder.svg"]
+  const images = useMemo(() => {
+    return house.images && house.images.length > 0 ? house.images : ["/placeholder.svg"]
+  }, [house?.images]) // Fixed: Added optional chaining to house.images
 
-  // Прелоад всіх зображень будинку
+  // Ініціалізація масивів стану при першому рендері
   useEffect(() => {
-    const newPreloadedImages = Array(images.length).fill(false)
+    setImagesLoaded(Array(images.length).fill(false))
+    setThumbnailsLoaded(Array(images.length).fill(false))
+  }, [images.length])
 
-    images.forEach((src, index) => {
+  // Оптимізована функція для зміни зображення з запобіганням частих змін
+  const changeImage = useCallback(
+    (index: number) => {
+      if (isChangingImage) return
+
+      setIsChangingImage(true)
+      setCurrentImageIndex(index)
+
+      // Дозволяємо наступну зміну зображення через невеликий проміжок часу
+      setTimeout(() => {
+        setIsChangingImage(false)
+      }, 100)
+    },
+    [isChangingImage],
+  )
+
+  const nextImage = useCallback(() => {
+    if (isChangingImage) return
+    changeImage(currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1)
+  }, [changeImage, currentImageIndex, images.length, isChangingImage])
+
+  const prevImage = useCallback(() => {
+    if (isChangingImage) return
+    changeImage(currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1)
+  }, [changeImage, currentImageIndex, images.length, isChangingImage])
+
+  const openModal = useCallback(() => {
+    setIsModalOpen(true)
+    setZoomLevel(1) // Скидаємо рівень зуму при відкритті модального вікна
+  }, [])
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false)
+  }, [])
+
+  const zoomIn = useCallback(() => {
+    setZoomLevel((prev) => Math.min(prev + 0.2, 3))
+  }, [])
+
+  const zoomOut = useCallback(() => {
+    setZoomLevel((prev) => Math.max(prev - 0.2, 0.5))
+  }, [])
+
+  const resetZoom = useCallback(() => {
+    setZoomLevel(1)
+  }, [])
+
+  const getDescription = useCallback((house: House, locale: string): string => {
+    return house.description[locale as keyof typeof house.description] || house.description.en
+  }, [])
+
+  const getAdditionalInfo = useCallback((house: House, locale: string): string => {
+    return house.additionalInfo[locale as keyof typeof house.additionalInfo] || house.additionalInfo.en
+  }, [])
+
+  // Прелоад наступного і попереднього зображення
+  useEffect(() => {
+    if (images.length <= 1) return
+
+    const nextIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1
+    const prevIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1
+
+    // Використовуємо requestIdleCallback для завантаження зображень у фоновому режимі
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      ;(window as any).requestIdleCallback(() => {
+        const preloadNext = new (window.Image as any)()
+        preloadNext.src = images[nextIndex]
+
+        const preloadPrev = new (window.Image as any)()
+        preloadPrev.src = images[prevIndex]
+      })
+    } else {
+      // Запасний варіант для браузерів, які не підтримують requestIdleCallback
+      setTimeout(() => {
+        const preloadNext = new (window.Image as any)()
+        preloadNext.src = images[nextIndex]
+
+        const preloadPrev = new (window.Image as any)()
+        preloadPrev.src = images[prevIndex]
+      }, 300)
+    }
+  }, [currentImageIndex, images])
+
+  // Блокування прокрутки при відкритому модальному вікні
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "auto"
+    }
+
+    return () => {
+      document.body.style.overflow = "auto"
+    }
+  }, [isModalOpen])
+
+  // Попереднє завантаження мініатюр з обмеженням одночасних завантажень
+  useEffect(() => {
+    // Максимальна кількість одночасних завантажень
+    const MAX_CONCURRENT_LOADS = 3
+    let activeLoads = 0
+    const queue = [...Array(images.length).keys()]
+
+    const loadNextThumbnail = () => {
+      if (queue.length === 0 || activeLoads >= MAX_CONCURRENT_LOADS) return
+
+      const index = queue.shift()
+      if (index === undefined) return
+
+      activeLoads++
+
       const img = new (window.Image as any)()
-      img.src = src
+      img.src = images[index]
+
       img.onload = () => {
-        setPreloadedImages((prev) => {
+        setThumbnailsLoaded((prev) => {
           const newState = [...prev]
           newState[index] = true
           return newState
         })
-      }
-    })
 
-    setImagesLoaded(Array(images.length).fill(false))
-    setThumbnailsLoaded(Array(images.length).fill(false))
-    setPreloadedImages(newPreloadedImages)
+        activeLoads--
+        loadNextThumbnail()
+      }
+
+      img.onerror = () => {
+        activeLoads--
+        loadNextThumbnail()
+      }
+    }
+
+    // Запускаємо завантаження перших MAX_CONCURRENT_LOADS мініатюр
+    for (let i = 0; i < MAX_CONCURRENT_LOADS; i++) {
+      loadNextThumbnail()
+    }
   }, [images])
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1))
-  }
+  // Мемоізуємо рендеринг додаткової інформації для покращення продуктивності
+  const additionalInfoContent = useMemo(() => {
+    if (!house.additionalInfo || !getAdditionalInfo(house, locale)) return null
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1))
-  }
-
-  const openModal = () => {
-    setIsModalOpen(true)
-    setZoomLevel(1) // Скидаємо рівень зуму при відкритті модального вікна
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const zoomIn = () => {
-    setZoomLevel((prev) => Math.min(prev + 0.2, 3))
-  }
-
-  const zoomOut = () => {
-    setZoomLevel((prev) => Math.max(prev - 0.2, 0.5))
-  }
-
-  const resetZoom = () => {
-    setZoomLevel(1)
-  }
-
-  const getDescription = (house: House, locale: string): string => {
-    return house.description[locale as keyof typeof house.description] || house.description.en
-  }
-
-  const getAdditionalInfo = (house: House, locale: string): string => {
-    return house.additionalInfo[locale as keyof typeof house.additionalInfo] || house.additionalInfo.en
-  }
-
-  const renderAdditionalInfo = (info: string) => {
+    const info = getAdditionalInfo(house, locale)
     return info.split("\n").map((line, index) => {
       if (line.startsWith("✅")) {
         return (
@@ -149,34 +241,46 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         )
       }
     })
-  }
+  }, [house.additionalInfo, getAdditionalInfo, locale])
 
-  // Прелоад наступного і попереднього зображення
-  useEffect(() => {
-    if (images.length <= 1) return
+  // Мемоізуємо рендеринг мініатюр для покращення продуктивності
+  const thumbnailsContent = useMemo(() => {
+    if (images.length <= 1) return null
 
-    const nextIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1
-    const prevIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1
-
-    const preloadNext = new (window.Image as any)()
-    preloadNext.src = images[nextIndex]
-
-    const preloadPrev = new (window.Image as any)()
-    preloadPrev.src = images[prevIndex]
-  }, [currentImageIndex, images])
-
-  // Блокування прокрутки при відкритому модальному вікні
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-
-    return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [isModalOpen])
+    return (
+      <div className="flex overflow-x-auto space-x-2 mb-6 pb-2">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className={`relative min-w-[80px] h-[60px] rounded-md overflow-hidden cursor-pointer border-2 ${
+              index === currentImageIndex ? "border-blue-500" : "border-transparent"
+            }`}
+            onClick={() => !isChangingImage && changeImage(index)}
+          >
+            {/* Плейсхолдер для мініатюри */}
+            <div
+              className={`absolute inset-0 bg-gray-200 animate-pulse ${thumbnailsLoaded[index] ? "hidden" : "block"}`}
+            />
+            <Image
+              src={image || "/placeholder.svg"}
+              alt={`${house.name} - Thumbnail ${index + 1}`}
+              fill
+              sizes="100px"
+              loading="eager"
+              className={`object-cover ${thumbnailsLoaded[index] ? "opacity-100" : "opacity-0"}`}
+              onLoad={() => {
+                setThumbnailsLoaded((prev) => {
+                  const newState = [...prev]
+                  newState[index] = true
+                  return newState
+                })
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    )
+  }, [images, currentImageIndex, thumbnailsLoaded, house.name, isChangingImage, changeImage])
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -198,9 +302,11 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
             onClick={openModal}
             priority={true}
             onLoad={() => {
-              const newImagesLoaded = [...imagesLoaded]
-              newImagesLoaded[currentImageIndex] = true
-              setImagesLoaded(newImagesLoaded)
+              setImagesLoaded((prev) => {
+                const newState = [...prev]
+                newState[currentImageIndex] = true
+                return newState
+              })
             }}
           />
         </div>
@@ -214,6 +320,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
               }}
               className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
               aria-label={t.previousImage}
+              disabled={isChangingImage}
             >
               <ChevronLeft className="h-6 w-6 text-white" />
             </button>
@@ -224,6 +331,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
               }}
               className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
               aria-label={t.nextImage}
+              disabled={isChangingImage}
             >
               <ChevronRight className="h-6 w-6 text-white" />
             </button>
@@ -235,36 +343,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
       </div>
 
       {/* Мініатюри зображень */}
-      {images.length > 1 && (
-        <div className="flex overflow-x-auto space-x-2 mb-6 pb-2">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className={`relative min-w-[100px] h-[75px] rounded-md overflow-hidden cursor-pointer border-2 ${
-                index === currentImageIndex ? "border-blue-500" : "border-transparent"
-              }`}
-              onClick={() => setCurrentImageIndex(index)}
-            >
-              {/* Плейсхолдер для мініатюри */}
-              <div
-                className={`absolute inset-0 bg-gray-200 animate-pulse ${thumbnailsLoaded[index] ? "hidden" : "block"}`}
-              />
-              <Image
-                src={image || "/placeholder.svg"}
-                alt={`${house.name} - Thumbnail ${index + 1}`}
-                fill
-                sizes="100px"
-                className={`object-cover ${thumbnailsLoaded[index] ? "opacity-100" : "opacity-0"}`}
-                onLoad={() => {
-                  const newThumbnailsLoaded = [...thumbnailsLoaded]
-                  newThumbnailsLoaded[index] = true
-                  setThumbnailsLoaded(newThumbnailsLoaded)
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      {thumbnailsContent}
 
       <p className="text-xl mb-2">
         {t.price}: {house.price}
@@ -284,9 +363,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
 
       {/* Додаткова інформація (тепер відображається одразу) */}
       {house.additionalInfo && getAdditionalInfo(house, locale) && (
-        <div className="mt-4 p-6 bg-gray-100 rounded-lg mb-6">
-          {renderAdditionalInfo(getAdditionalInfo(house, locale))}
-        </div>
+        <div className="mt-4 p-6 bg-gray-100 rounded-lg mb-6">{additionalInfoContent}</div>
       )}
 
       <Link
@@ -314,6 +391,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
                   onClick={prevImage}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 z-20 bg-black bg-opacity-70 rounded-full"
                   aria-label={t.previousImage}
+                  disabled={isChangingImage}
                 >
                   <ChevronLeft className="h-10 w-10 text-white" />
                 </button>
@@ -322,6 +400,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
                   onClick={nextImage}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 z-20 bg-black bg-opacity-70 rounded-full"
                   aria-label={t.nextImage}
+                  disabled={isChangingImage}
                 >
                   <ChevronRight className="h-10 w-10 text-white" />
                 </button>

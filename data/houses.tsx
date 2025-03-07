@@ -139,11 +139,15 @@ Si estás interesado o tienes alguna pregunta, ¡no dudes en contactarnos! 😊`
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-1129/photo 1.jpg", "/images-1129/photo 2.png", "/images-1129/photo 3.png", 
-      "/images-1129/photo 4.jpg", "/images-1129/photo 5.jpg", "/images-1129/photo 6.jpg", "/images-1129/photo 7.jpg", "/images-1129/photo 8.jpg", "/images-1129/photo 9.jpg", 
-      "/images-1129/photo 10.jpg", "/images-1129/photo 11.jpg", "/images-1129/photo 12.jpg", "/images-1129/photo 13.jpg", "/images-1129/photo 14.jpg", "/images-1129/photo 15.jpg"
-      , "/images-1129/photo 16.jpg", "/images-1129/photo 17.jpg", "/images-1129/photo 18.jpg", "/images-1129/photo 19.jpg"
-      , "/images-1129/photo 20.jpg", "/images-1129/photo 21.jpg", "/images-1129/photo 22.jpg"],
+    images: ["/images-1129/Main.jpg", "/images-1129/Room_1_1.jpg", "/images-1129/Room_1_2.jpg", "/images-1129/Room_1_3.jpg", 
+      "/images-1129/Room_1_4.jpg", "/images-1129/Room_1_5.jpg", "/images-1129/Room_2_1.jpg", "/images-1129/Room_2_2.jpg",
+      "/images-1129/Room_2_3.jpg", "/images-1129/Room_2_4.jpg", "/images-1129/Room_2_5.jpg", "/images-1129/Room_2_6.jpg", 
+      "/images-1129/Room_3_1.jpg", "/images-1129/Room_3_2.jpg", "/images-1129/Room_3_3.jpg", "/images-1129/Room_4_1.jpg",
+      "/images-1129/Room_4_2.jpg", "/images-1129/Room_4_3.jpg", "/images-1129/Room_4_4.jpg", "/images-1129/15.jpg",
+      "/images-1129/16.jpg", "/images-1129/17.jpg", "/images-1129/18.jpg", "/images-1129/19.jpg", "/images-1129/20.jpg",
+      "/images-1129/20.jpg", "/images-1129/21.jpg", "/images-1129/22.jpg", "/images-1129/23.jpg", "/images-1129/24.jpg",
+      "/images-1129/25.jpg", "/images-1129/26.jpg", "/images-1129/27.jpg", "/images-1129/28.jpg", "/images-1129/29.jpg", 
+      "/images-1129/30.jpg", "/images-1129/31.jpg", "/images-1129/32 Floor Plan 1.png", "/images-1129/33 Floor Plan 2.png"],
     additionalInfo: {
       en: `🏡 Large Private Room for Rent in the Heart of Dinkytown – Available NOW
 
