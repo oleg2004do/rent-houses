@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
 import type { House } from "@/types"
 import enMessages from "@/messages/en.json"
@@ -39,7 +38,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
 
   const images = useMemo(() => {
     return house.images && house.images.length > 0 ? house.images : ["/placeholder.svg"]
-  }, [house?.images]) // Fixed: Added optional chaining to house.images
+  }, [house.images])
 
   // Ініціалізація масивів стану при першому рендері
   useEffect(() => {
@@ -102,59 +101,39 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
     return house.additionalInfo[locale as keyof typeof house.additionalInfo] || house.additionalInfo.en
   }, [])
 
-  // Прелоад наступного і попереднього зображення
-  useEffect(() => {
-    if (images.length <= 1) return
-
-    const nextIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1
-    const prevIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1
-
-    // Використовуємо requestIdleCallback для завантаження зображень у фоновому режимі
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      ;(window as any).requestIdleCallback(() => {
-        const preloadNext = new (window.Image as any)()
-        preloadNext.src = images[nextIndex]
-
-        const preloadPrev = new (window.Image as any)()
-        preloadPrev.src = images[prevIndex]
-      })
-    } else {
-      // Запасний варіант для браузерів, які не підтримують requestIdleCallback
-      setTimeout(() => {
-        const preloadNext = new (window.Image as any)()
-        preloadNext.src = images[nextIndex]
-
-        const preloadPrev = new (window.Image as any)()
-        preloadPrev.src = images[prevIndex]
-      }, 300)
-    }
-  }, [currentImageIndex, images])
-
-  // Блокування прокрутки при відкритому модальному вікні
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-
-    return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [isModalOpen])
-
   // Попереднє завантаження мініатюр з обмеженням одночасних завантажень
   useEffect(() => {
+    if (!images.length) return
+
     // Максимальна кількість одночасних завантажень
-    const MAX_CONCURRENT_LOADS = 3
+    const MAX_CONCURRENT_LOADS = 2
     let activeLoads = 0
     const queue = [...Array(images.length).keys()]
+
+    // Спочатку завантажуємо поточне зображення
+    if (currentImageIndex >= 0 && currentImageIndex < images.length) {
+      const currentImg = new (window.Image as any)()
+      currentImg.src = images[currentImageIndex]
+      currentImg.onload = () => {
+        setImagesLoaded((prev) => {
+          const newState = [...prev]
+          newState[currentImageIndex] = true
+          return newState
+        })
+      }
+    }
 
     const loadNextThumbnail = () => {
       if (queue.length === 0 || activeLoads >= MAX_CONCURRENT_LOADS) return
 
       const index = queue.shift()
       if (index === undefined) return
+
+      // Пропускаємо поточне зображення, воно вже завантажується
+      if (index === currentImageIndex) {
+        loadNextThumbnail()
+        return
+      }
 
       activeLoads++
 
@@ -169,20 +148,41 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         })
 
         activeLoads--
-        loadNextThumbnail()
+        // Затримка перед завантаженням наступного зображення
+        setTimeout(loadNextThumbnail, 100)
       }
 
       img.onerror = () => {
         activeLoads--
-        loadNextThumbnail()
+        setTimeout(loadNextThumbnail, 100)
       }
     }
 
-    // Запускаємо завантаження перших MAX_CONCURRENT_LOADS мініатюр
-    for (let i = 0; i < MAX_CONCURRENT_LOADS; i++) {
-      loadNextThumbnail()
+    // Запускаємо завантаження перших мініатюр з затримкою
+    setTimeout(() => {
+      for (let i = 0; i < MAX_CONCURRENT_LOADS; i++) {
+        loadNextThumbnail()
+      }
+    }, 300)
+
+    return () => {
+      // Очищення, якщо компонент розмонтується
+      activeLoads = 0
     }
-  }, [images])
+  }, [images, currentImageIndex])
+
+  // Блокування прокрутки при відкритому модальному вікні
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "auto"
+    }
+
+    return () => {
+      document.body.style.overflow = "auto"
+    }
+  }, [isModalOpen])
 
   // Мемоізуємо рендеринг додаткової інформації для покращення продуктивності
   const additionalInfoContent = useMemo(() => {
@@ -252,7 +252,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
         {images.map((image, index) => (
           <div
             key={index}
-            className={`relative min-w-[80px] h-[60px] rounded-md overflow-hidden cursor-pointer border-2 ${
+            className={`relative min-w-[120px] h-[90px] rounded-md overflow-hidden cursor-pointer border-2 ${
               index === currentImageIndex ? "border-blue-500" : "border-transparent"
             }`}
             onClick={() => !isChangingImage && changeImage(index)}
@@ -261,21 +261,14 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
             <div
               className={`absolute inset-0 bg-gray-200 animate-pulse ${thumbnailsLoaded[index] ? "hidden" : "block"}`}
             />
-            <Image
-              src={image || "/placeholder.svg"}
-              alt={`${house.name} - Thumbnail ${index + 1}`}
-              fill
-              sizes="100px"
-              loading="eager"
-              className={`object-cover ${thumbnailsLoaded[index] ? "opacity-100" : "opacity-0"}`}
-              onLoad={() => {
-                setThumbnailsLoaded((prev) => {
-                  const newState = [...prev]
-                  newState[index] = true
-                  return newState
-                })
-              }}
-            />
+            {thumbnailsLoaded[index] && (
+              <img
+                src={image || "/placeholder.svg"}
+                alt={`${house.name} - Thumbnail ${index + 1}`}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            )}
           </div>
         ))}
       </div>
@@ -287,28 +280,18 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
       <h1 className="text-3xl font-bold mb-4">{house.name}</h1>
 
       <div className="relative mb-4">
-        {/* Плейсхолдер для зображення */}
-        <div
-          className={`w-full max-h-[600px] bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
-        />
-
         <div className="flex justify-center">
-          <Image
-            src={images[currentImageIndex] || "/placeholder.svg"}
-            alt={`${house.name} - Image ${currentImageIndex + 1}`}
-            width={800}
-            height={600}
-            className={`max-h-[600px] w-auto object-contain rounded-lg cursor-pointer ${imagesLoaded[currentImageIndex] ? "block" : "hidden"}`}
-            onClick={openModal}
-            priority={true}
-            onLoad={() => {
-              setImagesLoaded((prev) => {
-                const newState = [...prev]
-                newState[currentImageIndex] = true
-                return newState
-              })
-            }}
+          <div
+            className={`w-full max-h-[600px] bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
           />
+          {imagesLoaded[currentImageIndex] && (
+            <img
+              src={images[currentImageIndex] || "/placeholder.svg"}
+              alt={`${house.name} - Image ${currentImageIndex + 1}`}
+              className="max-h-[600px] w-auto object-contain rounded-lg cursor-pointer"
+              onClick={openModal}
+            />
+          )}
         </div>
 
         {images.length > 1 && (
@@ -409,13 +392,10 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
 
             <div className="overflow-auto w-full h-full flex items-center justify-center">
               <div style={{ transform: `scale(${zoomLevel})`, transition: "transform 0.2s" }}>
-                <Image
+                <img
                   src={images[currentImageIndex] || "/placeholder.svg"}
                   alt={`${house.name} - Full size image ${currentImageIndex + 1}`}
-                  width={1200}
-                  height={900}
                   className="max-w-full max-h-full object-contain"
-                  priority={true}
                 />
               </div>
             </div>

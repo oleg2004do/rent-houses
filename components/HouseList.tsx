@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { houses } from "@/data/houses"
 import { useState, useEffect } from "react"
 import type { House } from "@/types"
@@ -29,16 +28,24 @@ const HouseList = ({ locale }: { locale: string }) => {
     checkMobile()
     window.addEventListener("resize", checkMobile)
 
-    // Прелоад зображень
-    houses.forEach((house) => {
-      if (house.images && house.images.length > 0) {
-        const img = new (window.Image as any)()
-        img.src = house.images[0]
-        img.onload = () => {
-          setImagesLoaded((prev) => ({ ...prev, [house.id]: true }))
+    // Прелоад зображень з обмеженням
+    const loadImages = async () => {
+      // Завантажуємо зображення по черзі з затримкою
+      for (let i = 0; i < houses.length; i++) {
+        const house = houses[i]
+        if (house.images && house.images.length > 0) {
+          const img = new (window.Image as any)()
+          img.src = house.images[0]
+          img.onload = () => {
+            setImagesLoaded((prev) => ({ ...prev, [house.id]: true }))
+          }
+          // Затримка між завантаженнями зображень
+          await new Promise((resolve) => setTimeout(resolve, 100))
         }
       }
-    })
+    }
+
+    loadImages()
 
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
@@ -54,20 +61,17 @@ const HouseList = ({ locale }: { locale: string }) => {
               style={{ transition: "opacity 0.3s ease-in-out" }}
             />
 
-            <Image
-              src={house.images && house.images.length > 0 ? house.images[0] : "/placeholder.svg"}
-              alt={house.name}
-              fill
-              style={{
-                objectFit: "cover",
-                opacity: imagesLoaded[house.id] ? 1 : 0,
-                transition: "opacity 0.3s ease-in-out",
-              }}
-              loading="eager" // Завантажуємо перші зображення одразу
-              priority={house.id <= 3} // Пріоритет для перших трьох будинків
-              sizes={isMobile ? "100vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
-              onLoad={() => setImagesLoaded((prev) => ({ ...prev, [house.id]: true }))}
-            />
+            {imagesLoaded[house.id] && (
+              <img
+                src={house.images && house.images.length > 0 ? house.images[0] : "/placeholder.svg"}
+                alt={house.name}
+                className="w-full h-full object-cover"
+                style={{
+                  opacity: imagesLoaded[house.id] ? 1 : 0,
+                  transition: "opacity 0.3s ease-in-out",
+                }}
+              />
+            )}
           </div>
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-2">{house.name}</h2>

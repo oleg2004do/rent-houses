@@ -13,9 +13,13 @@ export const houses: House[] = [
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-1316/phonot 1.jpg", "/images-1316/phonot 2.jpg", "/images-1316/phonot 3.jpg", "/images-1316/phonot 4.jpg", "/images-1316/phonot 5.jpg",
-      "/images-1316/phonot 6.jpg", "/images-1316/phonot 7.jpg", "/images-1316/phonot 8.jpg", "/images-1316/phonot 9.jpg", "/images-1316/phonot 10.jpg", 
-      "/images-1316/phonot 11.jpg", "/images-1316/phonot 12.jpg", "/images-1316/phonot 13.jpg"],
+    images: ["/images-1136/Main.jpg", "/images-1136/Room_1_1.jpg", "/images-1136/Room_1_2.jpg",
+       "/images-1136/Room_2_1.jpg", "/images-1136/Room_2_2.jpg", "/images-1136/Room_3_1.jpg", "/images-1136/Room_3_2.jpg", "/images-1136/Room_3_3.jpg", "/images-1136/Room_3_4.jpg", "/images-1136/Room_4_1.jpg",
+      "/images-1136/Room_4_2.jpg", "/images-1136/Room_4_3.jpg", "/images-1136/Room_4_4.jpg", "/images-1136/5.jpg",
+      "/images-1136/6.jpg", "/images-1136/7.jpg", "/images-1136/8.jpg", "/images-1136/9.jpg", "/images-1136/10.jpg",
+      "/images-1136/11.jpg", "/images-1136/12.jpg", "/images-1136/13.jpg", "/images-1136/14.jpg", "/images-1136/14.jpg",
+      "/images-1136/15.jpg", "/images-1136/16.jpg", "/images-1136/17.jpg", "/images-1136/18.jpg", "/images-1136/19.jpg", 
+       "/images-1136/20 Floor Plan1.png", "/images-1136/21 Floor Plan2.png", "/images-1136/22 Floor Plan3.png"],
     additionalInfo: {
       en: `🏡 Large Private Room for Rent in the Heart of Dinkytown – Available NOW
 
@@ -144,7 +148,7 @@ Si estás interesado o tienes alguna pregunta, ¡no dudes en contactarnos! 😊`
       "/images-1129/Room_2_3.jpg", "/images-1129/Room_2_4.jpg", "/images-1129/Room_2_5.jpg", "/images-1129/Room_2_6.jpg", 
       "/images-1129/Room_3_1.jpg", "/images-1129/Room_3_2.jpg", "/images-1129/Room_3_3.jpg", "/images-1129/Room_4_1.jpg",
       "/images-1129/Room_4_2.jpg", "/images-1129/Room_4_3.jpg", "/images-1129/Room_4_4.jpg", "/images-1129/15.jpg",
-      "/images-1129/16.jpg", "/images-1129/17.jpg", "/images-1129/18.jpg", "/images-1129/19.jpg", "/images-1129/20.jpg",
+      "/images-1129/16.jpg", "/images-1129/17.jpg", "/images-1129/18.jpg", "/images-1129/19.jpg",
       "/images-1129/20.jpg", "/images-1129/21.jpg", "/images-1129/22.jpg", "/images-1129/23.jpg", "/images-1129/24.jpg",
       "/images-1129/25.jpg", "/images-1129/26.jpg", "/images-1129/27.jpg", "/images-1129/28.jpg", "/images-1129/29.jpg", 
       "/images-1129/30.jpg", "/images-1129/31.jpg", "/images-1129/32 Floor Plan 1.png", "/images-1129/33 Floor Plan 2.png"],
@@ -275,10 +279,10 @@ Amplias áreas de cocina
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-922/photo 1.jpg", "/images-922/photo 2.jpg", "/images-922/photo 3.jpg", 
-      "/images-922/photo 4.jpg", "/images-922/photo 5.jpg", "/images-922/photo 6.jpg", "/images-922/photo 7.jpg", "/images-922/photo 8.jpg", "/images-922/photo 9.jpg", 
-      "/images-922/photo 10.jpg", "/images-922/photo 11.jpg", "/images-922/photo 12.jpg", "/images-922/photo 13.jpg", "/images-922/photo 14.jpg", "/images-922/photo 15.jpg"
-      , "/images-922/photo 16.jpg", "/images-922/photo 17.jpg", "/images-922/photo 18.jpg", "/images-922/photo 19.jpg"],
+    images: ["/images-922/Main.jpg", "/images-922/Room_1_1.jpg", "/images-922/Room_1_2.jpg", "/images-922/Room_1_3.jpg",
+      "/images-922/Room_2_.jpg", "/images-922/Room_2_2.jpg", "/images-922/Room_2_3.jpg", "/images-922/1.jpg", "/images-922/2.jpg", "/images-922/3.jpg", "/images-922/4.jpg", "/images-922/5.jpg",
+     "/images-922/6.jpg", "/images-922/7.jpg", "/images-922/8.jpg", "/images-922/9.jpg",
+     "/images-922/10.jpg", "/images-922/11.jpg", "/images-922/12.jpg", "/images-922/13.jpg", "/images-922/14.jpg"],
     additionalInfo: {
       en: `🏡 Cozy Private Room for Rent in the Heart of Dinkytown – Available NOW!
 Looking for a comfortable and convenient place to live? A cozy, fully furnished private room is available for rent in a spacious, well-equipped house in the heart of Dinkytown. Move-in ready immediately!
