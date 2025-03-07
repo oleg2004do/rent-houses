@@ -13,13 +13,13 @@ export const houses: House[] = [
       uk: "Просторна, повністю мебльована приватна кімната у великому, добре обладнаному будинку.",
       es: "Una habitación privada espaciosa y totalmente amueblada en una casa grande y bien equipada.",
     },
-    images: ["/images-1136/Main.jpg", "/images-1136/Room_1_1.jpg", "/images-1136/Room_1_2.jpg",
-       "/images-1136/Room_2_1.jpg", "/images-1136/Room_2_2.jpg", "/images-1136/Room_3_1.jpg", "/images-1136/Room_3_2.jpg", "/images-1136/Room_3_3.jpg", "/images-1136/Room_3_4.jpg", "/images-1136/Room_4_1.jpg",
-      "/images-1136/Room_4_2.jpg", "/images-1136/Room_4_3.jpg", "/images-1136/Room_4_4.jpg", "/images-1136/5.jpg",
-      "/images-1136/6.jpg", "/images-1136/7.jpg", "/images-1136/8.jpg", "/images-1136/9.jpg", "/images-1136/10.jpg",
-      "/images-1136/11.jpg", "/images-1136/12.jpg", "/images-1136/13.jpg", "/images-1136/14.jpg", "/images-1136/14.jpg",
-      "/images-1136/15.jpg", "/images-1136/16.jpg", "/images-1136/17.jpg", "/images-1136/18.jpg", "/images-1136/19.jpg", 
-       "/images-1136/20 Floor Plan1.png", "/images-1136/21 Floor Plan2.png", "/images-1136/22 Floor Plan3.png"],
+    images: ["/images-1316/Main.jpg", "/images-1316/Room_1_1.jpg", "/images-1316/Room_1_2.jpg",
+      "/images-1316/Room_2_1.jpg", "/images-1316/Room_2_2.jpg", "/images-1316/Room_3_1.jpg", "/images-1316/Room_3_2.jpg", "/images-1316/Room_3_3.jpg", "/images-1316/Room_3_4.jpg", "/images-1316/Room_4_1.jpg",
+     "/images-1316/Room_4_2.jpg", "/images-1316/Room_4_3.jpg", "/images-1316/Room_4_4.jpg", "/images-1316/5.jpg",
+     "/images-1316/6.jpg", "/images-1316/7.jpg", "/images-1316/8.jpg", "/images-1316/9.jpg", "/images-1316/10.jpg",
+     "/images-1316/11.jpg", "/images-1316/12.jpg", "/images-1316/13.jpg", "/images-1316/14.jpg", "/images-1316/14.jpg",
+     "/images-1316/15.jpg", "/images-1316/16.jpg", "/images-1316/17.jpg", "/images-1316/18.jpg", "/images-1316/19.jpg", 
+      "/images-1316/20 Floor Plan1.png", "/images-1316/21 Floor Plan2.png", "/images-1316/22 Floor Plan3.png"],
     additionalInfo: {
       en: `🏡 Large Private Room for Rent in the Heart of Dinkytown – Available NOW
 
