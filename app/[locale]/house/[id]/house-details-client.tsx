@@ -7,6 +7,7 @@ import type { House } from "@/types"
 import enMessages from "@/messages/en.json"
 import ukMessages from "@/messages/uk.json"
 import esMessages from "@/messages/es.json"
+import Footer from "@/components/Footer"
 
 interface HouseDetailsClientProps {
   house: House | null
@@ -204,7 +205,7 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
             {line.substring(2)}
           </li>
         )
-      } else if (line.startsWith("✔️")) {
+      } else if (line.startsWith("✔️ ")) {
         return (
           <li key={index} className="flex items-start ml-4 mb-1">
             <span className="text-green-500 mr-2">✔️</span>
@@ -276,85 +277,79 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
   }, [images, currentImageIndex, thumbnailsLoaded, house.name, isChangingImage, changeImage])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">{house.name}</h1>
+    <>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4">{house.name}</h1>
 
-      <div className="relative mb-4">
-        <div className="flex justify-center">
-          <div
-            className={`w-full max-h-[600px] bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
-          />
-          {imagesLoaded[currentImageIndex] && (
-            <img
-              src={images[currentImageIndex] || "/placeholder.svg"}
-              alt={`${house.name} - Image ${currentImageIndex + 1}`}
-              className="max-h-[600px] w-auto object-contain rounded-lg cursor-pointer"
-              onClick={openModal}
+        <div className="relative mb-4">
+          <div className="flex justify-center">
+            <div
+              className={`w-full max-h-[600px] bg-gray-200 animate-pulse rounded-lg ${imagesLoaded[currentImageIndex] ? "hidden" : "block"}`}
             />
+            {imagesLoaded[currentImageIndex] && (
+              <img
+                src={images[currentImageIndex] || "/placeholder.svg"}
+                alt={`${house.name} - Image ${currentImageIndex + 1}`}
+                className="max-h-[600px] w-auto object-contain rounded-lg cursor-pointer"
+                onClick={openModal}
+              />
+            )}
+          </div>
+
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  prevImage()
+                }}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
+                aria-label={t.previousImage}
+                disabled={isChangingImage}
+              >
+                <ChevronLeft className="h-6 w-6 text-white" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  nextImage()
+                }}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
+                aria-label={t.nextImage}
+                disabled={isChangingImage}
+              >
+                <ChevronRight className="h-6 w-6 text-white" />
+              </button>
+            </>
           )}
+          <div className="absolute bottom-2 right-2 bg-white bg-opacity-75 px-2 py-1 rounded text-sm">
+            {currentImageIndex + 1} / {images.length}
+          </div>
         </div>
 
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                prevImage()
-              }}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
-              aria-label={t.previousImage}
-              disabled={isChangingImage}
-            >
-              <ChevronLeft className="h-6 w-6 text-white" />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                nextImage()
-              }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-70 p-2 rounded-full z-20"
-              aria-label={t.nextImage}
-              disabled={isChangingImage}
-            >
-              <ChevronRight className="h-6 w-6 text-white" />
-            </button>
-          </>
+        {/* Мініатюри зображень */}
+        {thumbnailsContent}
+
+        <p className="text-xl mb-2">
+          {t.price}: {house.price}
+        </p>
+        <p className="text-lg mb-2">
+          {t.address}: {house.address}
+        </p>
+        <p className="mb-4">{getDescription(house, locale)}</p>
+
+        {/* Додаткова інформація (тепер відображається одразу) */}
+        {house.additionalInfo && getAdditionalInfo(house, locale) && (
+          <div className="mt-4 p-6 bg-gray-100 rounded-lg mb-6">{additionalInfoContent}</div>
         )}
-        <div className="absolute bottom-2 right-2 bg-white bg-opacity-75 px-2 py-1 rounded text-sm">
-          {currentImageIndex + 1} / {images.length}
-        </div>
-      </div>
 
-      {/* Мініатюри зображень */}
-      {thumbnailsContent}
-
-      <p className="text-xl mb-2">
-        {t.price}: {house.price}
-      </p>
-      <p className="text-lg mb-2">
-        {t.address}:
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(house.address)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 hover:underline ml-1"
+        <Link
+          href={`/${params.locale}`}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
         >
-          {house.address}
-        </a>
-      </p>
-      <p className="mb-4">{getDescription(house, locale)}</p>
-
-      {/* Додаткова інформація (тепер відображається одразу) */}
-      {house.additionalInfo && getAdditionalInfo(house, locale) && (
-        <div className="mt-4 p-6 bg-gray-100 rounded-lg mb-6">{additionalInfoContent}</div>
-      )}
-
-      <Link
-        href={`/${params.locale}`}
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-      >
-        {t.backToHome}
-      </Link>
+          {t.backToHome}
+        </Link>
+      </div>
 
       {/* Модальне вікно для перегляду зображень */}
       {isModalOpen && (
@@ -418,7 +413,11 @@ export default function HouseDetailsClient({ house, params }: HouseDetailsClient
           </div>
         </div>
       )}
-    </div>
+
+      <div className="mt-12 w-full">
+        <Footer locale={locale} />
+      </div>
+    </>
   )
 }
 
